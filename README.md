@@ -5,6 +5,7 @@ directory is a package whose contents mirror `$HOME`:
 
 ```
 ~/dotfiles/
+├── ghostty/.config/ghostty/         → ~/.config/ghostty
 ├── nvim/.config/nvim/               → ~/.config/nvim
 ├── starship/.config/starship.toml   → ~/.config/starship.toml
 ├── zsh/.zshenv                      → ~/.zshenv
@@ -17,6 +18,10 @@ Works on macOS and Linux.
 
 #### Packages
 
+- `ghostty` – terminal config (`~/.config/ghostty`). `auto/theme.ghostty`
+  holds the theme picked in Ghostty; commit it when it changes. Keep
+  `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`
+  empty, since it overrides this config on macOS.
 - `nvim` – LazyVim config (`~/.config/nvim`). Plugins are installed by
   lazy.nvim from `lazy-lock.json`, not stored here.
 - `zsh` – `~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`. Secrets go in

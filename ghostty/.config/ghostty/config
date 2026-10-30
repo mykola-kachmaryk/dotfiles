@@ -1,0 +1,21 @@
+foreground = ffffff
+#theme = Catppuccin Mocha
+# theme = TokyoNight Night
+
+mouse-hide-while-typing = true
+window-decoration = true
+macos-option-as-alt = true
+# background = 011423
+# background-opacity = 0.9
+background-blur-radius = 20
+macos-titlebar-style = hidden
+#adjust-cell-height = 15%
+font-size = 14
+# font-family = PT Mono
+# font-family = Meslo
+# font-family = MesloLGL Nerd Font Mono
+# font-family = Geist Mono
+# font-family = JetBrains Mono NL
+# font-family = JetBrainsMonoNL Nerd Font Mono
+
+config-file = ?auto/theme.ghostty
