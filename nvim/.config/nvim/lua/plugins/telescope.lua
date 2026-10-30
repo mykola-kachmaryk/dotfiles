@@ -1,0 +1,43 @@
+return {}
+-- return {
+--   "nvim-telescope/telescope.nvim",
+--   dependencies = {
+--     -- other dependencies
+--     "nvim-telescope/telescope-media-files.nvim",
+--   },
+--   config = function()
+--     require("telescope").setup({
+--       extensions = {
+--         media_files = {
+--           -- Optional: You can configure filetypes, find_cmd, etc.
+--         },
+--       },
+--     })
+--     require("telescope").load_extension("media_files")
+--   end,
+-- }
+
+-- return {
+--   "nvim-telescope/telescope.nvim",
+--   opts = function(_, opts)
+--     local previewers = require("telescope.previewers")
+--     local buffer_previewer_maker = function(filepath, bufnr, opts)
+--       filepath = vim.fn.expand(filepath)
+--       local extension = filepath:match("^.+%.(.+)$")
+--
+--       -- Disable preview for binary/image files
+--       local blacklist = { "png", "jpg", "jpeg", "gif", "webp", "svg" }
+--       if vim.tbl_contains(blacklist, extension) then
+--         return
+--       end
+--
+--       previewers.buffer_previewer_maker(filepath, bufnr, opts)
+--     end
+--
+--     opts.defaults = vim.tbl_deep_extend("force", opts.defaults or {}, {
+--       buffer_previewer_maker = buffer_previewer_maker,
+--     })
+--
+--     return opts
+--   end,
+-- }
