@@ -1,0 +1,4 @@
+.zsh_history
+secrets.zsh
+*.bak-*
+.zhistory
