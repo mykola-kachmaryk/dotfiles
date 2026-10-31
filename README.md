@@ -186,10 +186,9 @@ After: run `nvim`. lazy.nvim installs the plugins on first start; run
 
 ##### starship
 
-Prompt config (`~/.config/starship/starship.toml`), loaded by the zsh
-config. Starship's default location is `~/.config/starship.toml`; the zsh
-config points it here with `STARSHIP_CONFIG` (in `conf.d/90-prompt.zsh`), so
-it only applies in shells that load that config.
+Prompt config (`~/.config/starship/starship.toml`). The zsh config points
+starship here with `STARSHIP_CONFIG`, instead of the default
+`~/.config/starship.toml`.
 
 ```sh
 # install
@@ -288,7 +287,8 @@ After: put tokens in `~/.config/zsh/secrets.zsh` (local, not tracked), e.g.
 #### Daily use
 
 Edit files through their usual paths (`~/.config/nvim/...`); the changes
-land in this repo, so commit them here.
+land in this repo, so commit them here. After `git pull`, run `./install.sh`
+again: it links new files and removes links to files that moved.
 
 ```sh
 cd ~/dotfiles
