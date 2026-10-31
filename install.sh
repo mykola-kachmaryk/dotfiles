@@ -52,11 +52,13 @@ REAL_DIRS='.config
 .config/git
 Library
 Library/Application Support
+Library/Application Support/Code
+Library/Application Support/Code/User
 Library/Application Support/VSCodium
 Library/Application Support/VSCodium/User'
 
 # Packages for macOS-only apps, skipped on other systems
-MACOS_ONLY="aerospace karabiner vscodium"
+MACOS_ONLY="aerospace karabiner vscode vscodium"
 
 # Packages kept in git but not installed by default. Name one to install it.
 SKIP="aerospace"
