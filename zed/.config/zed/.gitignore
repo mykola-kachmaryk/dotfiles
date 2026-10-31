@@ -1,0 +1,9 @@
+# Zed writes app data here too (prompt library db, conversations).
+# Track only config; anything new Zed adds stays ignored.
+/*
+!/.gitignore
+!/settings.json
+!/keymap.json
+!/tasks.json
+!/snippets/
+!/themes/

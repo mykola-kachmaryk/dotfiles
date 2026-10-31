@@ -9,6 +9,7 @@ directory is a package whose contents mirror `$HOME`:
 ├── nvim/.config/nvim/               → ~/.config/nvim
 ├── starship/.config/starship.toml   → ~/.config/starship.toml
 ├── tmux/.config/tmux/tmux.conf      → ~/.config/tmux/tmux.conf
+├── zed/.config/zed/                 → ~/.config/zed
 ├── zsh/.zshenv                      → ~/.zshenv
 ├── zsh/.config/zsh/...              → ~/.config/zsh/...
 ├── install.sh                       # set up a new machine
@@ -134,6 +135,31 @@ After: run `tmux`. The first start clones TPM and installs the plugins in
 the background (the status bar fills in when done). Reload the config with
 `prefix r`, install newly added plugins with `prefix I`, remove unused ones
 with `prefix Alt-u`.
+
+##### zed
+
+Editor config (`~/.config/zed`). The whole directory is linked because Zed
+rewrites `settings.json` when you change things in the UI; its `.gitignore`
+tracks only `settings.json`, `keymap.json`, `tasks.json`, `snippets/` and
+`themes/`, so app data (prompt library, conversations) stays out of git.
+
+```sh
+# install
+brew install --cask zed                       # macOS
+curl -f https://zed.dev/install.sh | sh       # Linux
+
+# link (quit Zed first)
+./install.sh zed
+# or stow:
+mkdir -p ~/.config
+mv ~/.config/zed ~/.config/zed.bak 2>/dev/null
+stow -v zed
+```
+
+After: open Zed. Extensions listed in `auto_install_extensions` (Vague
+theme, PHP/intelephense, …) install on first start. When you install a new
+extension, add it there too. `buffer_font_family` is Menlo, which only
+exists on macOS; Linux falls back to another font.
 
 ##### zsh
 
