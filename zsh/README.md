@@ -89,3 +89,9 @@ ZDOTDIR=~/.config/zsh zsh -f -i -c 'zmodload zsh/datetime; source ~/.zshenv; sou
 - **oh-my-zsh:** uncomment `00-omz.zsh`, delete `00-options.zsh` and
   `10-completion.zsh`, uncomment the nvm completion line in `05-path.zsh` and
   the two old `bindkey` lines in `20-history.zsh` (and remove the new ones).
+  oh-my-zsh itself is no longer installed (`~/.oh-my-zsh` was removed), so
+  first reinstall it, without letting it replace `.zshrc`:
+
+  ```sh
+  KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  ```
