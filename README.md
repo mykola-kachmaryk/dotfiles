@@ -280,13 +280,14 @@ exists on macOS; Linux falls back to another font.
 
 ##### zsh
 
-`~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`, plain zsh without a
-framework. Tools that aren't installed are skipped. nvm is loaded on first
-use (`nvm ...` or a project with `.nvmrc`), which keeps startup under 0.1 s.
+`~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`. Tools that aren't
+installed are skipped.
 
 ```sh
 # install (macOS: Brewfile)
 sudo apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting
+# oh-my-zsh, without replacing .zshrc
+KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # link
 ./install.sh zsh
