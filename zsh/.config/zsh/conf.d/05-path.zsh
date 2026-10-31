@@ -65,12 +65,12 @@ if [[ $OSTYPE == darwin* ]]; then
 
   path=($HOME/Library/Python/3.*/bin(N) $path)
 
-  # Herd injected PHP configuration.
-  export HERD_PHP_74_INI_SCAN_DIR="$HOME/Library/Application Support/Herd/config/php/74/"
-  export HERD_PHP_82_INI_SCAN_DIR="$HOME/Library/Application Support/Herd/config/php/82/"
-  export HERD_PHP_83_INI_SCAN_DIR="$HOME/Library/Application Support/Herd/config/php/83/"
-  export HERD_PHP_84_INI_SCAN_DIR="$HOME/Library/Application Support/Herd/config/php/84/"
-  export HERD_PHP_85_INI_SCAN_DIR="$HOME/Library/Application Support/Herd/config/php/85/"
+  # Herd injected PHP configuration: one ini scan dir per PHP version that
+  # Herd has installed (config/php/85 -> HERD_PHP_85_INI_SCAN_DIR)
+  for _php in "$HOME/Library/Application Support/Herd/config/php"/<->(N/); do
+    export "HERD_PHP_${_php:t}_INI_SCAN_DIR=$_php/"
+  done
+  unset _php
 fi
 
 # user-installed tools (pipx, uv, ...)
