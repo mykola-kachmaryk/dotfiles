@@ -1,0 +1,5 @@
+# Karabiner writes automatic_backups/ here. Track only config.
+/*
+!/.gitignore
+!/karabiner.json
+!/assets/

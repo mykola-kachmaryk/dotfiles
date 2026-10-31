@@ -16,6 +16,9 @@ BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 # Stow links their contents instead of the directory itself.
 REAL_DIRS=".config .config/zsh .config/tmux .config/git"
 
+# Packages for macOS-only apps, skipped on other systems
+MACOS_ONLY="aerospace karabiner"
+
 DRY_RUN=0
 if [ "${1:-}" = "-n" ]; then
   DRY_RUN=1
@@ -92,6 +95,22 @@ for pkg in "$@"; do
   fi
 done
 
+if [ "$(uname -s)" != Darwin ]; then
+  keep=""
+  for pkg in "$@"; do
+    case " $MACOS_ONLY " in
+      *" $pkg "*) echo "skip: $pkg (macOS only)" ;;
+      *) keep="$keep $pkg" ;;
+    esac
+  done
+  # shellcheck disable=SC2086 # package names have no spaces
+  set -- $keep
+  if [ $# -eq 0 ]; then
+    echo "Nothing to install."
+    exit 0
+  fi
+fi
+
 for pkg in "$@"; do
   for item in "$DOTFILES/$pkg"/* "$DOTFILES/$pkg"/.[!.]*; do
     [ -e "$item" ] || continue
@@ -146,7 +165,8 @@ EOF
 done
 
 # Secret scan before each commit in this repo (.githooks/pre-commit)
-run git -C "$DOTFILES" config core.hooksPath .githooks
+run git -C "$DOTFILES" config core.hooksPath .githooks ||
+  echo "warning: could not enable the pre-commit hook (git config failed)" >&2
 command -v gitleaks >/dev/null 2>&1 ||
   echo "Install gitleaks to enable the pre-commit secret scan: brew install gitleaks"
 

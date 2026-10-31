@@ -5,8 +5,10 @@ directory is a package whose contents mirror `$HOME`:
 
 ```
 ~/dotfiles/
+├── aerospace/.config/aerospace/     → ~/.config/aerospace     (macOS only)
 ├── ghostty/.config/ghostty/         → ~/.config/ghostty
 ├── git/.config/git/{config,ignore,template} → ~/.config/git/...
+├── karabiner/.config/karabiner/     → ~/.config/karabiner     (macOS only)
 ├── nvim/.config/nvim/               → ~/.config/nvim
 ├── starship/.config/starship.toml   → ~/.config/starship.toml
 ├── tmux/.config/tmux/tmux.conf      → ~/.config/tmux/tmux.conf
@@ -42,6 +44,7 @@ Then install each package's tools and do its "after" steps below.
 - creates `~/.config/zsh/secrets.zsh` with mode 600 and a
   `~/.config/git/config.local` template
 - enables the secret-scanning pre-commit hook (see Daily use)
+- skips macOS-only packages (`MACOS_ONLY` in the script) on other systems
 - is safe to re-run
 
 To link a package with plain stow instead, use the "stow" commands in its
@@ -49,6 +52,26 @@ section. Run them from `~/dotfiles`, and keep the `mkdir -p` line: if the
 directory doesn't exist, stow links the whole directory into this repo.
 
 #### Packages
+
+##### aerospace (macOS only)
+
+Tiling window manager config (`~/.config/aerospace/aerospace.toml`).
+Archived: not installed right now, linked so it works on reinstall.
+
+```sh
+# install
+brew install --cask nikitabobko/tap/aerospace
+
+# link
+./install.sh aerospace
+# or stow:
+mkdir -p ~/.config
+mv ~/.config/aerospace ~/.config/aerospace.bak 2>/dev/null
+stow -v aerospace
+```
+
+After: start AeroSpace and grant it Accessibility access (System Settings →
+Privacy & Security → Accessibility). Reload with `aerospace reload-config`.
 
 ##### ghostty
 
@@ -114,6 +137,29 @@ and in `~/.config/git/config.personal`:
 
 Check with `git config user.email` inside a repo. The URL pattern needs
 `:*/**`: a bare `:**` doesn't match the `/` in `owner/repo.git`.
+
+##### karabiner (macOS only)
+
+Keyboard remapping (`~/.config/karabiner`): Caps Lock → Hyper when held /
+Escape when tapped, Caps+hjkl and Cmd+Shift+hjkl → arrow keys. Archived: not
+installed right now. The whole directory is linked because Karabiner
+rewrites `karabiner.json` itself; its `.gitignore` tracks only
+`karabiner.json` and `assets/`, so `automatic_backups/` stays out of git.
+
+```sh
+# install
+brew install --cask karabiner-elements
+
+# link (quit Karabiner-Elements first)
+./install.sh karabiner
+# or stow:
+mkdir -p ~/.config
+mv ~/.config/karabiner ~/.config/karabiner.bak 2>/dev/null
+stow -v karabiner
+```
+
+After: open Karabiner-Elements and allow its driver and input monitoring
+when macOS asks. The rules load from `karabiner.json` automatically.
 
 ##### nvim
 
