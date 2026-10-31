@@ -22,6 +22,16 @@ Linux.
 
 #### New machine
 
+First give the machine access to GitHub; SSH keys aren't in this repo:
+
+```sh
+ssh-keygen -t ed25519 -C "<machine name>"
+cat ~/.ssh/id_ed25519.pub        # add at GitHub → Settings → SSH and GPG keys
+ssh -T git@github.com            # should greet you by your GitHub username
+```
+
+Then (`<repo>` = `git@github.com:mykola-kachmaryk/dotfiles.git`):
+
 ```sh
 # macOS: install Homebrew (https://brew.sh), then
 git clone <repo> ~/dotfiles && cd ~/dotfiles
@@ -44,6 +54,7 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.local/bi
 exec zsh
 fnm install 24 && fnm default 24
 brew bundle                           # macOS: now also the global npm packages
+npm install -g corepack @typescript/native-preview   # Linux: the same packages
 ```
 
 Then do the "after" steps under Packages.
@@ -104,7 +115,8 @@ the macOS-only block.
   reloads, `prefix I` installs new plugins, `prefix Alt-u` removes unused.
 - **zed:** quit Zed before linking. The whole directory is linked because Zed
   rewrites `settings.json`; only config files are tracked (allow-list
-  `.gitignore`). Add new extensions to `auto_install_extensions`.
+  `.gitignore`). Add new extensions to `auto_install_extensions`. On Arch
+  the command is `zeditor`.
 - **zsh:** put tokens in `~/.config/zsh/secrets.zsh` (not tracked). On Linux:
   `chsh -s "$(command -v zsh)"` and log in again.
 - **git:** set your identity in `~/.config/git/config.local`. It's included
@@ -125,6 +137,11 @@ the macOS-only block.
   `[user] email = 17613536+mykola-kachmaryk@users.noreply.github.com`.
   Check with `git config user.email` in a repo. The pattern needs `:*/**`: a
   bare `:**` doesn't match the `/` in `owner/repo.git`.
+
+  That split only matches repos cloned via the `github.com-personal` SSH
+  alias (`Host github.com-personal` in `~/.ssh/config`, not in this repo). On
+  a personal-only machine, skip it and put the noreply email straight into
+  `config.local`'s `[user]`.
 
 #### Daily use
 

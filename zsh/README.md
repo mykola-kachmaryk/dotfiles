@@ -16,7 +16,7 @@ starts in about 0.08 s.
 | File | What |
 |---|---|
 | `00-omz.zsh` | oh-my-zsh, disabled (kept commented out, see below) |
-| `00-options.zsh` | vi mode, shell options, Home/End/Delete/Ctrl+arrow keys |
+| `00-options.zsh` | starts in `~` if the current folder was deleted (e.g. a removed git worktree; brew and fnm fail there), vi mode, shell options, Home/End/Delete/Ctrl+arrow keys |
 | `05-path.zsh` | Homebrew, fnm (Node), Herd/PHP, pnpm, `~/.local/bin`; old nvm setup commented out |
 | `10-completion.zsh` | completion (`compinit`), completion styles |
 | `20-history.zsh` | history file and options, Up/Down prefix search |
@@ -86,7 +86,8 @@ ZDOTDIR=~/.config/zsh zsh -f -i -c 'zmodload zsh/datetime; source ~/.zshenv; sou
   delete the fnm lines; uncomment the nvm completion line in
   `10-completion.zsh` and the Herd line in `50-herd.zsh`. `~/.nvm` is still
   installed.
-- **oh-my-zsh:** uncomment `00-omz.zsh`, delete `00-options.zsh` and
+- **oh-my-zsh:** uncomment `00-omz.zsh`, delete `00-options.zsh` (keep its
+  deleted-folder check at the top, it's unrelated to oh-my-zsh) and
   `10-completion.zsh`, uncomment the nvm completion line in `05-path.zsh` and
   the two old `bindkey` lines in `20-history.zsh` (and remove the new ones).
   oh-my-zsh itself is no longer installed (`~/.oh-my-zsh` was removed), so
