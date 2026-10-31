@@ -4,6 +4,7 @@
 #   ./install.sh                    # dry run: show what would change
 #   ./install.sh --apply            # make the changes, all packages
 #   ./install.sh --apply zsh nvim   # only these (options can go anywhere)
+#   ./install.sh --apply aerospace  # a package skipped by default
 #   ./install.sh -h                 # this help
 #
 #   -a, --apply    make the changes (default is a dry run)
@@ -48,6 +49,9 @@ REAL_DIRS=".config .config/zsh .config/tmux .config/git"
 
 # Packages for macOS-only apps, skipped on other systems
 MACOS_ONLY="aerospace karabiner"
+
+# Packages kept in git but not installed by default. Name one to install it.
+SKIP="aerospace"
 
 
 run() {
@@ -107,10 +111,18 @@ fi
 
 cd "$DOTFILES"
 
-# Default: every top-level directory is a package
+# Default: every top-level directory is a package, except those in SKIP
 if [ $# -eq 0 ]; then
-  set -- */
-  set -- "${@%/}"
+  keep=""
+  for pkg in */; do
+    pkg="${pkg%/}"
+    case " $SKIP " in
+      *" $pkg "*) echo "skip: $pkg (not installed by default; run: $0 --apply $pkg)" ;;
+      *) keep="$keep $pkg" ;;
+    esac
+  done
+  # shellcheck disable=SC2086 # package names have no spaces
+  set -- $keep
 fi
 
 for pkg in "$@"; do

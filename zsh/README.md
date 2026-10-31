@@ -15,14 +15,12 @@ starts in about 0.08 s.
 
 | File | What |
 |---|---|
-| `00-omz.zsh` | oh-my-zsh, disabled (kept commented out, see below) |
 | `00-options.zsh` | starts in `~` if the current folder was deleted (e.g. a removed git worktree; brew and fnm fail there), vi mode, shell options, Home/End/Delete/Ctrl+arrow keys |
-| `05-path.zsh` | Homebrew, fnm (Node), Herd/PHP, pnpm, `~/.local/bin`; old nvm setup commented out |
+| `05-path.zsh` | Homebrew, fnm (Node), Herd/PHP, pnpm, `~/.local/bin` |
 | `10-completion.zsh` | completion (`compinit`), completion styles |
 | `20-history.zsh` | history file and options, Up/Down prefix search |
 | `30-aliases.zsh` | your aliases (git, pnpm, eza, zoxide, nvim) |
 | `40-tools.zsh` | zoxide, zsh-autosuggestions |
-| `50-herd.zsh` | Herd's nvm hook, disabled (fnm switches Node on `cd` now) |
 | `90-prompt.zsh` | zsh-syntax-highlighting, starship |
 
 `secrets.zsh` holds tokens. It is local only (ignored by git) and mode 600.
@@ -47,8 +45,7 @@ fnm is a small program that does the same in a few ms:
   also from its subfolders (`--version-file-strategy recursive`, like nvm),
   and back to the default when you leave
 - if a project asks for a version that isn't installed, it prints an error
-  and stays on the default: run `fnm install` there (Herd's nvm hook
-  installed it automatically)
+  and stays on the default: run `fnm install` there
 
 Commands: `fnm install 22`, `fnm use 22`, `fnm default 24`, `fnm list`.
 Herd's own Node features don't use this: Herd has its own bundled nvm.
@@ -82,17 +79,6 @@ ZDOTDIR=~/.config/zsh zsh -f -i -c 'zmodload zsh/datetime; source ~/.zshenv; sou
 
 ## Going back
 
-- **nvm instead of fnm:** in `05-path.zsh`, uncomment the nvm block and
-  delete the fnm lines; uncomment the nvm completion line in
-  `10-completion.zsh` and the Herd line in `50-herd.zsh`. `~/.nvm` is still
-  installed.
-- **oh-my-zsh:** uncomment `00-omz.zsh`, delete `00-options.zsh` (keep its
-  deleted-folder check at the top, it's unrelated to oh-my-zsh) and
-  `10-completion.zsh`, uncomment the nvm completion line in `05-path.zsh` and
-  the two old `bindkey` lines in `20-history.zsh` (and remove the new ones).
-  oh-my-zsh itself is no longer installed (`~/.oh-my-zsh` was removed), so
-  first reinstall it, without letting it replace `.zshrc`:
-
-  ```sh
-  KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  ```
+nvm, Herd's nvm shell hook and oh-my-zsh were removed on 2026-10-31
+(`~/.nvm` and `~/.oh-my-zsh` deleted). Their old setup, commented out, is in
+git history: `git log -- zsh/.config/zsh/conf.d/00-omz.zsh`.

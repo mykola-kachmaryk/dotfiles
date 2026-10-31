@@ -9,12 +9,6 @@ setopt hist_ignore_dups
 setopt hist_verify
 setopt hist_ignore_space   # commands starting with a space aren't saved (was set by oh-my-zsh)
 
-# completion using arrow keys (based on history)
-# Previous bindings, kept for reference: oh-my-zsh overrode them with the
-# prefix search below, which is what Up/Down actually did
-# bindkey '^[[A' history-search-backward
-# bindkey '^[[B' history-search-forward
-
 # Up/Down: search history for lines starting with what's typed so far
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search

@@ -13,51 +13,15 @@ unset brew
 # `brew bundle` uses ~/dotfiles/Brewfile from any directory
 export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
 
-# fnm: Node version manager (loaded before the PATH prepends below, where nvm
-# used to be). Puts the default Node on PATH and switches version on cd into a
-# project with .nvmrc / .node-version, also from its subfolders ("recursive",
-# like nvm did). Replaces nvm and Herd's shell hook (50-herd.zsh); Herd's app
-# and sites use their own bundled nvm, so they're not affected.
+# fnm: Node version manager (loaded before the PATH prepends below). Puts the
+# default Node on PATH and switches version on cd into a project with .nvmrc /
+# .node-version, also from its subfolders ("recursive"). Herd's app and sites
+# use their own bundled nvm, so they're not affected.
 # Homebrew's fnm is on PATH already; Linux's install script puts it in
 # ~/.local/bin, which is only added to PATH further down
 _fnm=${commands[fnm]:-$HOME/.local/bin/fnm}
 [[ -x $_fnm ]] && eval "$($_fnm env --use-on-cd --version-file-strategy recursive --shell zsh)"
 unset _fnm
-
-# nvm, disabled while testing fnm. To go back: uncomment this block and the nvm
-# line in 10-completion.zsh, re-enable 50-herd.zsh, delete the fnm line above.
-#
-# # nvm (loaded before the PATH prepends below, as originally)
-# export NVM_DIR="$HOME/.nvm"
-#
-# # Previous setup, kept for reference. Loading nvm normally also runs
-# # `nvm use default`, which takes ~0.4 s on every new shell. To go back,
-# # uncomment the nvm.sh line and delete the "--no-use" block below.
-# # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-#
-# # Load nvm without `nvm use` (~40 ms). nvm and its functions stay available
-# # (Herd's .nvmrc hook in 50-herd.zsh needs them); only the default Node is
-# # put on PATH here instead, which is all `nvm use default` did at startup.
-# if [[ -s $NVM_DIR/nvm.sh ]]; then
-#   . "$NVM_DIR/nvm.sh" --no-use
-#   # Default alias "24" -> highest installed v24.x (numeric sort, so v24.21 > v24.9)
-#   _nvm_bin=()
-#   [[ -r $NVM_DIR/alias/default ]] &&
-#     _nvm_bin=($NVM_DIR/versions/node/v${$(<$NVM_DIR/alias/default)#v}*/bin(N/nOn[1]))
-#   # Defaults like "lts/*" need nvm to resolve them: fall back to the slow way
-#   if [[ -n $_nvm_bin ]]; then
-#     # Same variables `nvm use` sets
-#     export NVM_BIN=$_nvm_bin NVM_INC=${_nvm_bin:h}/include/node
-#     export MANPATH="${_nvm_bin:h}/share/man:$MANPATH"
-#     path=($_nvm_bin $path)
-#   else
-#     nvm use --silent default
-#   fi
-#   unset _nvm_bin
-# fi
-#
-# # nvm's completion: moved to 10-completion.zsh while testing without oh-my-zsh
-# # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 if [[ $OSTYPE == darwin* ]]; then
   # Herd injected PHP binary.

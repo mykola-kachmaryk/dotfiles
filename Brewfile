@@ -51,6 +51,7 @@ if OS.mac?
 
   # Apps
   cask "1password"
+  cask "aldente"
   cask "beekeeper-studio"
   cask "betterdisplay"
   cask "caffeine"
@@ -66,6 +67,13 @@ if OS.mac?
   cask "stats"
   cask "vscodium"
   cask "zed"
+  # Tiling window manager, not used for now (its dotfiles package is skipped
+  # by install.sh by default)
+  # cask "nikitabobko/tap/aerospace"
+
+  # Fonts
+  cask "font-jetbrains-mono"
+  cask "font-meslo-lg-nerd-font"
 
   # VSCodium extensions
   vscode "bmewburn.vscode-intelephense-client"

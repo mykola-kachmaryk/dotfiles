@@ -5,7 +5,7 @@ if [[ $PWD != /* || ! -d $PWD ]]; then
   cd ~
 fi
 
-# Shell options and keys that oh-my-zsh used to set (see 00-omz.zsh)
+# Shell options and keys that oh-my-zsh used to set
 
 set -o vi
 

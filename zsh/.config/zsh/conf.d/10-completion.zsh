@@ -1,4 +1,4 @@
-# Completion setup that oh-my-zsh used to do (see 00-omz.zsh). Runs after
+# Completion setup (what oh-my-zsh used to do). Runs after
 # 05-path.zsh so Homebrew's completions are on fpath.
 # Keep the completion dump out of $ZDOTDIR
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
@@ -18,11 +18,6 @@ else
   compinit -d "$ZSH_COMPDUMP"
 fi
 unset _comp_fresh _comp_dir
-
-# nvm's completion, moved here from 05-path.zsh: it runs its own slow compinit
-# unless compinit has already run (which oh-my-zsh used to do first).
-# Disabled while testing fnm, whose completion comes with Homebrew (_fnm).
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Case-insensitive, then partial-word matching
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'

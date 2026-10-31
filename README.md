@@ -6,7 +6,7 @@ Linux.
 
 ```
 ~/dotfiles/
-├── aerospace/.config/aerospace/     → ~/.config/aerospace     (macOS only)
+├── aerospace/.config/aerospace/     → ~/.config/aerospace     (macOS only, skipped by default)
 ├── ghostty/.config/ghostty/         → ~/.config/ghostty
 ├── git/.config/git/{config,ignore,template} → ~/.config/git/...
 ├── karabiner/.config/karabiner/     → ~/.config/karabiner     (macOS only)
@@ -86,7 +86,7 @@ the macOS-only block.
 
 | Package | What | Ubuntu/Debian install (macOS: Brewfile, Arch: pacman line above) |
 |---|---|---|
-| aerospace | tiling window manager (macOS, archived) | — |
+| aerospace | tiling window manager (macOS, archived; not installed by default) | — |
 | ghostty | terminal | https://ghostty.org/docs/install |
 | git | defaults, aliases, global ignore, commit template | `apt install git` |
 | karabiner | Caps Lock → Hyper/Escape, hjkl arrows (macOS, archived) | — |
@@ -98,8 +98,9 @@ the macOS-only block.
 
 **After installing:**
 
-- **aerospace:** `brew install --cask nikitabobko/tap/aerospace`, grant it
-  Accessibility access, `aerospace reload-config`.
+- **aerospace:** skipped by `./install.sh` unless named:
+  `./install.sh --apply aerospace`. Then `brew install --cask nikitabobko/tap/aerospace`,
+  grant it Accessibility access, `aerospace reload-config`.
 - **karabiner:** `brew install --cask karabiner-elements` (quit it before
   linking), then allow its driver and input monitoring when macOS asks. The
   whole directory is linked because Karabiner rewrites `karabiner.json`;
