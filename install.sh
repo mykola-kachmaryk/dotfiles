@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # Link dotfiles packages into $HOME with GNU Stow.
 #
-#   ./install.sh             # all packages
-#   ./install.sh zsh nvim    # only these
-#   ./install.sh -n [pkg..]  # dry run
-#   ./install.sh -h          # this help
+#   ./install.sh                    # dry run: show what would change
+#   ./install.sh --apply            # make the changes, all packages
+#   ./install.sh --apply zsh nvim   # only these (options can go anywhere)
+#   ./install.sh -h                 # this help
+#
+#   -a, --apply    make the changes (default is a dry run)
+#   -n, --dry-run  only show what would change (the default)
 #
 # Existing files in the way are moved to ~/.dotfiles-backup/<timestamp>/.
 # Safe to re-run.
@@ -15,12 +18,26 @@ usage() {
   awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "$0"
 }
 
-case "${1:-}" in
-  -h | --help)
-    usage
-    exit 0
-    ;;
-esac
+DRY_RUN=1
+pkgs=""
+for arg in "$@"; do
+  case "$arg" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -a | --apply) DRY_RUN=0 ;;
+    -n | --dry-run) DRY_RUN=1 ;;
+    -*)
+      echo "unknown option: $arg" >&2
+      usage >&2
+      exit 1
+      ;;
+    *) pkgs="$pkgs $arg" ;;
+  esac
+done
+# shellcheck disable=SC2086 # package names have no spaces
+set -- $pkgs
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd -P)"
 BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
@@ -32,11 +49,6 @@ REAL_DIRS=".config .config/zsh .config/tmux .config/git"
 # Packages for macOS-only apps, skipped on other systems
 MACOS_ONLY="aerospace karabiner"
 
-DRY_RUN=0
-if [ "${1:-}" = "-n" ]; then
-  DRY_RUN=1
-  shift
-fi
 
 run() {
   if [ "$DRY_RUN" = 1 ]; then
@@ -102,13 +114,6 @@ if [ $# -eq 0 ]; then
 fi
 
 for pkg in "$@"; do
-  case "$pkg" in
-    -*)
-      echo "unknown option: $pkg" >&2
-      usage >&2
-      exit 1
-      ;;
-  esac
   if [ ! -d "$DOTFILES/$pkg" ]; then
     echo "unknown package: $pkg" >&2
     exit 1
@@ -139,7 +144,8 @@ for pkg in "$@"; do
 done
 
 if [ "$DRY_RUN" = 1 ]; then
-  stow -n -v -d "$DOTFILES" -t "$HOME" -R "$@" || true
+  stow -n -v -d "$DOTFILES" -t "$HOME" -R "$@" ||
+    echo "(dry run: stow sees the files above as conflicts because they haven't been backed up yet; a real run moves them first)"
 else
   stow -v -d "$DOTFILES" -t "$HOME" -R "$@"
 fi
@@ -161,13 +167,15 @@ for pkg in "$@"; do
       ;;
     git)
       identity="$HOME/.config/git/config.local"
+      gitconfig="$HOME/.gitconfig"
+      copied=""
       if [ ! -e "$identity" ]; then
         if [ "$DRY_RUN" = 1 ]; then
           echo "would create: $identity"
         else
           cat > "$identity" <<'EOF'
-# Local git identity for this machine. Not tracked in ~/dotfiles.
-# git refuses to commit until user.name and user.email are set here.
+# Local git settings for this machine (identity, overrides). Not tracked in
+# ~/dotfiles. git refuses to commit until user.name and user.email are set.
 #
 # [user]
 # 	name = Your Name
@@ -177,8 +185,39 @@ for pkg in "$@"; do
 # [includeIf "hasconfig:remote.*.url:git@github.com-personal:*/**"]
 # 	path = config.personal
 EOF
+          echo "Created $identity: set your git name and email there."
         fi
-        echo "Created $identity: set your git name and email there."
+
+        # Keep the existing identity: from ~/.gitconfig, or from the old
+        # ~/.config/git/config backed up above
+        for src in "$gitconfig" "$BACKUP/.config/git/config"; do
+          [ -f "$src" ] && [ ! -L "$src" ] || continue
+          name=$(git config --file "$src" --get user.name || true)
+          email=$(git config --file "$src" --get user.email || true)
+          [ -n "$name$email" ] || continue
+          [ -z "$name" ] || run git config --file "$identity" user.name "$name"
+          [ -z "$email" ] || run git config --file "$identity" user.email "$email"
+          verb=Copied
+          [ "$DRY_RUN" = 0 ] || verb="Would copy"
+          who=$name
+          [ -z "$email" ] || who="${name:+$name }<$email>"
+          echo "$verb git identity ($who) from ~${src#"$HOME"} to $identity"
+          copied=$src
+          break
+        done
+      fi
+
+      # ~/.gitconfig is read after ~/.config/git/config and would override it
+      if [ -f "$gitconfig" ] && [ ! -L "$gitconfig" ]; then
+        others=$(git config --file "$gitconfig" --list 2>/dev/null || true)
+        [ "$copied" != "$gitconfig" ] ||
+          others=$(printf '%s\n' "$others" | grep -vE '^user\.(name|email)=' || true)
+        backup ".gitconfig"
+        if [ -n "$others" ]; then
+          echo "~/.gitconfig also had these settings, not carried over."
+          echo "Add any you want to $identity:"
+          printf '%s\n' "$others" | sed 's/^/  /'
+        fi
       fi
       ;;
   esac
@@ -190,4 +229,9 @@ run git -C "$DOTFILES" config core.hooksPath .githooks ||
 command -v gitleaks >/dev/null 2>&1 ||
   echo "Install gitleaks to enable the pre-commit secret scan: brew install gitleaks"
 
-echo "Done: $*"
+if [ "$DRY_RUN" = 1 ]; then
+  echo "Dry run, nothing changed: $*"
+  echo "To make these changes: $0 --apply${pkgs}"
+else
+  echo "Done: $*"
+fi

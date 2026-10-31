@@ -33,8 +33,8 @@ brew bundle --file ~/dotfiles/Brewfile   # tools and apps (npm packages fail unt
 sudo apt install stow git gitleaks
 git clone <repo> ~/dotfiles && cd ~/dotfiles
 
-./install.sh -n                       # dry run: what would be backed up and linked
-./install.sh                          # all packages, or e.g. ./install.sh zsh tmux
+./install.sh                          # dry run: what would be backed up and linked
+./install.sh --apply                  # all packages, or e.g. ./install.sh --apply zsh tmux
 
 # Node via fnm (macOS: fnm comes with the Brewfile)
 curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.local/bin --skip-shell   # Linux only
@@ -63,6 +63,7 @@ drop its grouping and the macOS-only block.
 
 `install.sh`:
 
+- only shows what it would do unless you pass `--apply` (`-h` for help)
 - moves conflicting files to `~/.dotfiles-backup/<timestamp>/`
 - keeps `~/.config`, `~/.config/zsh`, `~/.config/tmux` and `~/.config/git`
   as real directories, so stow doesn't link them into this repo and local
@@ -90,7 +91,7 @@ Archived: not installed right now, linked so it works on reinstall.
 brew install --cask nikitabobko/tap/aerospace
 
 # link
-./install.sh aerospace
+./install.sh --apply aerospace
 # or stow:
 mkdir -p ~/.config
 mv ~/.config/aerospace ~/.config/aerospace.bak 2>/dev/null
@@ -110,7 +111,7 @@ picked in Ghostty; commit it when it changes.
 # Linux: https://ghostty.org/docs/install
 
 # link
-./install.sh ghostty
+./install.sh --apply ghostty
 # or stow:
 mkdir -p ~/.config
 mv ~/.config/ghostty ~/.config/ghostty.bak 2>/dev/null
@@ -123,21 +124,28 @@ empty, since it overrides this config.
 
 ##### git
 
-Global git config (`~/.config/git`): aliases, global ignore, commit message
-template. Name and email are **not** in the repo: `config` includes
-`~/.config/git/config.local`, a local file per machine, and sets
-`user.useConfigOnly` so git refuses to commit until that file sets an
-identity.
+Global git config (`~/.config/git`): defaults (`pull.rebase`, `autoStash`,
+`push.autoSetupRemote`, …), aliases, global ignore, commit message template.
+Name and email are **not** in the repo: `config` includes
+`~/.config/git/config.local` last, a local file per machine for the identity
+and any settings this machine should do differently. `user.useConfigOnly`
+makes git refuse to commit until that file sets an identity.
+
+A `~/.gitconfig` would override all of this (git reads it last), so
+`install.sh --apply git` moves it to the backup folder, copies its name and email (or
+those of an old `~/.config/git/config`) into `config.local`, and lists the
+other settings it had so you can add the ones you want.
 
 ```sh
 # install (macOS: Brewfile)
 sudo apt install git                  # Ubuntu/Debian
 
 # link
-./install.sh git                      # also creates a config.local template
+./install.sh --apply git                      # also creates config.local, migrates ~/.gitconfig
 # or stow:
 mkdir -p ~/.config/git                # stays a real dir for config.local
 for f in config ignore template; do mv ~/.config/git/$f ~/.config/git/$f.bak 2>/dev/null; done
+mv ~/.gitconfig ~/.gitconfig.bak 2>/dev/null   # would override the dotfiles; copy its [user] to config.local
 stow -v git
 ```
 
@@ -176,7 +184,7 @@ rewrites `karabiner.json` itself; its `.gitignore` tracks only
 brew install --cask karabiner-elements
 
 # link (quit Karabiner-Elements first)
-./install.sh karabiner
+./install.sh --apply karabiner
 # or stow:
 mkdir -p ~/.config
 mv ~/.config/karabiner ~/.config/karabiner.bak 2>/dev/null
@@ -198,7 +206,7 @@ sudo apt install git ripgrep fd-find build-essential          # Ubuntu/Debian
 # https://github.com/neovim/neovim/releases
 
 # link
-./install.sh nvim
+./install.sh --apply nvim
 # or stow:
 mkdir -p ~/.config
 mv ~/.config/nvim ~/.config/nvim.bak 2>/dev/null
@@ -222,7 +230,7 @@ brew install --cask font-jetbrains-mono-nerd-font     # macOS
                                                       # Linux: https://www.nerdfonts.com
 
 # link
-./install.sh starship
+./install.sh --apply starship
 # or stow:
 mkdir -p ~/.config
 mv ~/.config/starship ~/.config/starship.bak 2>/dev/null
@@ -242,7 +250,7 @@ into `~/.config/tmux/plugins` on first start, not stored here.
 sudo apt install tmux git python3 python3-venv        # Ubuntu/Debian
 
 # link
-./install.sh tmux
+./install.sh --apply tmux
 # or stow:
 mkdir -p ~/.config/tmux                               # stays a real dir for plugins/
 mv ~/.config/tmux/tmux.conf ~/.config/tmux/tmux.conf.bak 2>/dev/null
@@ -266,7 +274,7 @@ tracks only `settings.json`, `keymap.json`, `tasks.json`, `snippets/` and
 curl -f https://zed.dev/install.sh | sh       # Linux
 
 # link (quit Zed first)
-./install.sh zed
+./install.sh --apply zed
 # or stow:
 mkdir -p ~/.config
 mv ~/.config/zed ~/.config/zed.bak 2>/dev/null
@@ -289,7 +297,7 @@ installed are skipped. How it's organized and why it starts fast:
 sudo apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting
 
 # link
-./install.sh zsh
+./install.sh --apply zsh
 # or stow:
 mkdir -p ~/.config/zsh                        # stays a real dir for secrets.zsh
 mv ~/.zshenv ~/.zshenv.bak 2>/dev/null
@@ -307,8 +315,8 @@ After: put tokens in `~/.config/zsh/secrets.zsh` (local, not tracked), e.g.
 #### Daily use
 
 Edit files through their usual paths (`~/.config/nvim/...`); the changes
-land in this repo, so commit them here. After `git pull`, run `./install.sh`
-again: it links new files and removes links to files that moved.
+land in this repo, so commit them here. After `git pull`, run
+`./install.sh --apply` again: it links new files and removes links to files that moved.
 
 ```sh
 cd ~/dotfiles

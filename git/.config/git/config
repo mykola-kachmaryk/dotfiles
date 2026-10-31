@@ -1,6 +1,5 @@
-# Identity lives in config.local (per machine, not in the repo)
-[include]
-	path = config.local
+# Identity and per-machine overrides live in config.local (not in the repo),
+# included at the end so it wins over the settings here
 
 [user]
 	useConfigOnly = true	# refuse to commit until config.local sets an identity
@@ -40,3 +39,7 @@
         pdef = "!git pull --rebase origin \"$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@')\""
         lol = log --graph --decorate --pretty=oneline --abbrev-commit
         hist = log --pretty=format:'%C(yellow)%h%C(reset) %ad | %C(75)%s%C(reset) %C(yellow)%d%C(reset) [%an]' --graph --date=short --branches --all
+
+# Last, so this machine's settings override the ones above
+[include]
+	path = config.local
