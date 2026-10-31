@@ -10,7 +10,7 @@ directory is a package whose contents mirror `$HOME`:
 ├── git/.config/git/{config,ignore,template} → ~/.config/git/...
 ├── karabiner/.config/karabiner/     → ~/.config/karabiner     (macOS only)
 ├── nvim/.config/nvim/               → ~/.config/nvim
-├── starship/.config/starship.toml   → ~/.config/starship.toml
+├── starship/.config/starship/       → ~/.config/starship
 ├── tmux/.config/tmux/tmux.conf      → ~/.config/tmux/tmux.conf
 ├── zed/.config/zed/                 → ~/.config/zed
 ├── zsh/.zshenv                      → ~/.zshenv
@@ -186,7 +186,10 @@ After: run `nvim`. lazy.nvim installs the plugins on first start; run
 
 ##### starship
 
-Prompt config (`~/.config/starship.toml`), loaded by the zsh config.
+Prompt config (`~/.config/starship/starship.toml`), loaded by the zsh
+config. Starship's default location is `~/.config/starship.toml`; the zsh
+config points it here with `STARSHIP_CONFIG` (in `conf.d/90-prompt.zsh`), so
+it only applies in shells that load that config.
 
 ```sh
 # install
@@ -199,7 +202,7 @@ curl -sS https://starship.rs/install.sh | sh          # Linux
 ./install.sh starship
 # or stow:
 mkdir -p ~/.config
-mv ~/.config/starship.toml ~/.config/starship.toml.bak 2>/dev/null
+mv ~/.config/starship ~/.config/starship.bak 2>/dev/null
 stow -v starship
 ```
 

@@ -6,4 +6,5 @@ for plugin in {$HOMEBREW_PREFIX/share,/usr/share,/usr/share/zsh/plugins}/zsh-syn
 done
 unset plugin
 
+export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 (( $+commands[starship] )) && eval "$(starship init zsh)"
