@@ -4,10 +4,23 @@
 #   ./install.sh             # all packages
 #   ./install.sh zsh nvim    # only these
 #   ./install.sh -n [pkg..]  # dry run
+#   ./install.sh -h          # this help
 #
 # Existing files in the way are moved to ~/.dotfiles-backup/<timestamp>/.
 # Safe to re-run.
 set -eu
+
+# Print the comment block above
+usage() {
+  awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "$0"
+}
+
+case "${1:-}" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
+esac
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd -P)"
 BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
@@ -89,6 +102,13 @@ if [ $# -eq 0 ]; then
 fi
 
 for pkg in "$@"; do
+  case "$pkg" in
+    -*)
+      echo "unknown option: $pkg" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
   if [ ! -d "$DOTFILES/$pkg" ]; then
     echo "unknown package: $pkg" >&2
     exit 1
