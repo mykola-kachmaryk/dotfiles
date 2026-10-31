@@ -102,6 +102,7 @@ if OS.mac?
   cask "stats"
   cask "tableplus"
   cask "transmission"
+  cask "visual-studio-code"
   cask "vscodium"
   cask "wezterm"
   cask "zed"
