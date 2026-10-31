@@ -1,7 +1,8 @@
 ### Dotfiles
 
 Managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level
-directory is a package whose contents mirror `$HOME`:
+directory is a package whose contents mirror `$HOME`. Works on macOS and
+Linux.
 
 ```
 ~/dotfiles/
@@ -13,14 +14,11 @@ directory is a package whose contents mirror `$HOME`:
 ├── starship/.config/starship/       → ~/.config/starship
 ├── tmux/.config/tmux/tmux.conf      → ~/.config/tmux/tmux.conf
 ├── zed/.config/zed/                 → ~/.config/zed
-├── zsh/.zshenv                      → ~/.zshenv
-├── zsh/.config/zsh/...              → ~/.config/zsh/...
+├── zsh/.zshenv, zsh/.config/zsh/    → ~/.zshenv, ~/.config/zsh/
 ├── Brewfile                         # Homebrew packages and apps (not linked)
 ├── install.sh                       # set up a new machine
 └── .stowrc                          # stow defaults: target ~, ignore .DS_Store
 ```
-
-Works on macOS and Linux.
 
 #### New machine
 
@@ -29,7 +27,7 @@ Works on macOS and Linux.
 git clone <repo> ~/dotfiles && cd ~/dotfiles
 brew bundle --file ~/dotfiles/Brewfile   # tools and apps (npm packages fail until Node is in)
 
-# Ubuntu/Debian (24.04+)
+# Ubuntu/Debian (24.04+): see each package's Linux line below
 sudo apt install stow git gitleaks
 git clone <repo> ~/dotfiles && cd ~/dotfiles
 
@@ -43,331 +41,128 @@ fnm install 24 && fnm default 24
 brew bundle                           # macOS: now also the global npm packages
 ```
 
-Then do each package's "after" steps below (on Linux, also its install
-commands).
+Then do the "after" steps under Packages.
 
-The `Brewfile` lists everything installed with Homebrew, with apps and
-editor extensions in a macOS-only block. The zsh config sets
-`HOMEBREW_BUNDLE_FILE` to it, so plain `brew bundle` commands use it from
-any directory:
+`install.sh` only shows what it would do unless you pass `--apply` (`-h` for
+help). It moves conflicting files to `~/.dotfiles-backup/<timestamp>/`,
+creates `~/.config/zsh/secrets.zsh` (mode 600) and
+`~/.config/git/config.local`, moves a `~/.gitconfig` aside (keeping its
+identity), enables the secret-scanning hook, skips macOS-only packages
+elsewhere (`MACOS_ONLY`) and is safe to re-run. `~/.config`, `~/.config/zsh`,
+`~/.config/tmux` and `~/.config/git` stay real directories (`REAL_DIRS`), so
+local files (secrets, tmux plugins, git identity) stay out of this repo.
 
-```sh
-brew bundle                           # install what's missing
-brew bundle add <name> [--cask]       # install later? add it here
-brew bundle remove <name>
-brew bundle cleanup                   # list installed packages not in the Brewfile
-```
+**Without install.sh**, from `~/dotfiles`: move the existing config out of the
+way, create the target directory, then `stow -v <pkg>`. Create it with
+`mkdir -p ~/.config/zsh` (or `tmux`, `git`) for those three packages and
+`mkdir -p ~/.config` for the rest: if it doesn't exist, stow links the whole
+directory into this repo.
 
-Edit it by hand or with `add`/`remove`: `brew bundle dump --force` would
-drop its grouping and the macOS-only block.
-
-`install.sh`:
-
-- only shows what it would do unless you pass `--apply` (`-h` for help)
-- moves conflicting files to `~/.dotfiles-backup/<timestamp>/`
-- keeps `~/.config`, `~/.config/zsh`, `~/.config/tmux` and `~/.config/git`
-  as real directories, so stow doesn't link them into this repo and local
-  files (secrets, tmux plugins, git identity) stay out of it (`REAL_DIRS` in
-  the script)
-- creates `~/.config/zsh/secrets.zsh` with mode 600 and a
-  `~/.config/git/config.local` template
-- enables the secret-scanning pre-commit hook (see Daily use)
-- skips macOS-only packages (`MACOS_ONLY` in the script) on other systems
-- is safe to re-run
-
-To link a package with plain stow instead, use the "stow" commands in its
-section. Run them from `~/dotfiles`, and keep the `mkdir -p` line: if the
-directory doesn't exist, stow links the whole directory into this repo.
+**Brewfile.** Everything installed with Homebrew; apps and editor
+extensions are in a macOS-only block. The zsh config sets
+`HOMEBREW_BUNDLE_FILE`, so plain `brew bundle` works from any directory:
+`brew bundle` (install what's missing), `brew bundle add <name> [--cask]`,
+`brew bundle remove <name>`, `brew bundle cleanup` (list what's installed but
+not listed). Don't use `brew bundle dump --force`: it drops the grouping and
+the macOS-only block.
 
 #### Packages
 
-##### aerospace (macOS only)
+| Package | What | Linux install (macOS: Brewfile) |
+|---|---|---|
+| aerospace | tiling window manager (macOS, archived) | — |
+| ghostty | terminal | https://ghostty.org/docs/install |
+| git | defaults, aliases, global ignore, commit template | `apt install git` |
+| karabiner | Caps Lock → Hyper/Escape, hjkl arrows (macOS, archived) | — |
+| nvim | LazyVim; plugins from `lazy-lock.json` | `apt install git ripgrep fd-find build-essential` + [Neovim release](https://github.com/neovim/neovim/releases) (apt's is too old) |
+| starship | prompt, via `STARSHIP_CONFIG` | `curl -sS https://starship.rs/install.sh \| sh` |
+| tmux | prefix `C-a`; TPM plugins install on first start | `apt install tmux git python3 python3-venv` |
+| zed | editor; extensions auto-install | `curl -f https://zed.dev/install.sh \| sh` |
+| zsh | plain zsh, fnm, starts in ~0.08 s ([zsh/README.md](zsh/README.md)) | `apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting` |
 
-Tiling window manager config (`~/.config/aerospace/aerospace.toml`).
-Archived: not installed right now, linked so it works on reinstall.
+**After installing:**
 
-```sh
-# install
-brew install --cask nikitabobko/tap/aerospace
+- **aerospace:** `brew install --cask nikitabobko/tap/aerospace`, grant it
+  Accessibility access, `aerospace reload-config`.
+- **karabiner:** `brew install --cask karabiner-elements` (quit it before
+  linking), then allow its driver and input monitoring when macOS asks. The
+  whole directory is linked because Karabiner rewrites `karabiner.json`;
+  `automatic_backups/` stays out of git.
+- **ghostty:** reload with `Cmd+Shift+,` / `Ctrl+Shift+,`. Commit
+  `auto/theme.ghostty` when you change the theme in Ghostty. Keep
+  `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty` empty:
+  it overrides this config on macOS.
+- **nvim:** run `nvim`, then `:Lazy restore` for the exact plugin versions.
+- **starship:** non-Ghostty terminals need a Nerd Font
+  (`brew install --cask font-jetbrains-mono-nerd-font`).
+- **tmux:** run `tmux`; the plugins install in the background. `prefix r`
+  reloads, `prefix I` installs new plugins, `prefix Alt-u` removes unused.
+- **zed:** quit Zed before linking. The whole directory is linked because Zed
+  rewrites `settings.json`; only config files are tracked (allow-list
+  `.gitignore`). Add new extensions to `auto_install_extensions`.
+- **zsh:** put tokens in `~/.config/zsh/secrets.zsh` (not tracked). On Linux:
+  `chsh -s "$(command -v zsh)"` and log in again.
+- **git:** set your identity in `~/.config/git/config.local`. It's included
+  last, so it can also override any setting for this machine.
+  `user.useConfigOnly` makes git refuse to commit until it's set.
 
-# link
-./install.sh --apply aerospace
-# or stow:
-mkdir -p ~/.config
-mv ~/.config/aerospace ~/.config/aerospace.bak 2>/dev/null
-stow -v aerospace
-```
+  ```ini
+  [user]
+  	name = Your Name
+  	email = you@work.example                        # default (work)
 
-After: start AeroSpace and grant it Accessibility access (System Settings →
-Privacy & Security → Accessibility). Reload with `aerospace reload-config`.
+  # repos cloned via the github.com-personal SSH alias get the personal email
+  [includeIf "hasconfig:remote.*.url:git@github.com-personal:*/**"]
+  	path = config.personal
+  ```
 
-##### ghostty
-
-Terminal config (`~/.config/ghostty`). `auto/theme.ghostty` holds the theme
-picked in Ghostty; commit it when it changes.
-
-```sh
-# install (macOS: Brewfile)
-# Linux: https://ghostty.org/docs/install
-
-# link
-./install.sh --apply ghostty
-# or stow:
-mkdir -p ~/.config
-mv ~/.config/ghostty ~/.config/ghostty.bak 2>/dev/null
-stow -v ghostty
-```
-
-After: reload with `Cmd+Shift+,` (macOS) / `Ctrl+Shift+,` (Linux). On macOS,
-keep `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`
-empty, since it overrides this config.
-
-##### git
-
-Global git config (`~/.config/git`): defaults (`pull.rebase`, `autoStash`,
-`push.autoSetupRemote`, …), aliases, global ignore, commit message template.
-Name and email are **not** in the repo: `config` includes
-`~/.config/git/config.local` last, a local file per machine for the identity
-and any settings this machine should do differently. `user.useConfigOnly`
-makes git refuse to commit until that file sets an identity.
-
-A `~/.gitconfig` would override all of this (git reads it last), so
-`install.sh --apply git` moves it to the backup folder, copies its name and email (or
-those of an old `~/.config/git/config`) into `config.local`, and lists the
-other settings it had so you can add the ones you want.
-
-```sh
-# install (macOS: Brewfile)
-sudo apt install git                  # Ubuntu/Debian
-
-# link
-./install.sh --apply git                      # also creates config.local, migrates ~/.gitconfig
-# or stow:
-mkdir -p ~/.config/git                # stays a real dir for config.local
-for f in config ignore template; do mv ~/.config/git/$f ~/.config/git/$f.bak 2>/dev/null; done
-mv ~/.gitconfig ~/.gitconfig.bak 2>/dev/null   # would override the dotfiles; copy its [user] to config.local
-stow -v git
-```
-
-After: set your identity in `~/.config/git/config.local`:
-
-```ini
-[user]
-	name = Your Name
-	email = you@work.example                        # default (work)
-
-# repos cloned via the github.com-personal SSH alias get the personal email
-[includeIf "hasconfig:remote.*.url:git@github.com-personal:*/**"]
-	path = config.personal
-```
-
-and in `~/.config/git/config.personal`:
-
-```ini
-[user]
-	email = 17613536+mykola-kachmaryk@users.noreply.github.com
-```
-
-Check with `git config user.email` inside a repo. The URL pattern needs
-`:*/**`: a bare `:**` doesn't match the `/` in `owner/repo.git`.
-
-##### karabiner (macOS only)
-
-Keyboard remapping (`~/.config/karabiner`): Caps Lock → Hyper when held /
-Escape when tapped, Caps+hjkl and Cmd+Shift+hjkl → arrow keys. Archived: not
-installed right now. The whole directory is linked because Karabiner
-rewrites `karabiner.json` itself; its `.gitignore` tracks only
-`karabiner.json` and `assets/`, so `automatic_backups/` stays out of git.
-
-```sh
-# install
-brew install --cask karabiner-elements
-
-# link (quit Karabiner-Elements first)
-./install.sh --apply karabiner
-# or stow:
-mkdir -p ~/.config
-mv ~/.config/karabiner ~/.config/karabiner.bak 2>/dev/null
-stow -v karabiner
-```
-
-After: open Karabiner-Elements and allow its driver and input monitoring
-when macOS asks. The rules load from `karabiner.json` automatically.
-
-##### nvim
-
-LazyVim config (`~/.config/nvim`). Plugins are installed by lazy.nvim from
-`lazy-lock.json`, not stored here.
-
-```sh
-# install (macOS: Brewfile)
-sudo apt install git ripgrep fd-find build-essential          # Ubuntu/Debian
-# plus Neovim itself: apt's version is often too old for LazyVim, use
-# https://github.com/neovim/neovim/releases
-
-# link
-./install.sh --apply nvim
-# or stow:
-mkdir -p ~/.config
-mv ~/.config/nvim ~/.config/nvim.bak 2>/dev/null
-stow -v nvim
-```
-
-After: run `nvim`. lazy.nvim installs the plugins on first start; run
-`:Lazy restore` to get exactly the versions in `lazy-lock.json`.
-
-##### starship
-
-Prompt config (`~/.config/starship/starship.toml`). The zsh config points
-starship here with `STARSHIP_CONFIG`, instead of the default
-`~/.config/starship.toml`.
-
-```sh
-# install (macOS: Brewfile)
-curl -sS https://starship.rs/install.sh | sh          # Linux
-# Nerd Font for non-Ghostty terminals:
-brew install --cask font-jetbrains-mono-nerd-font     # macOS
-                                                      # Linux: https://www.nerdfonts.com
-
-# link
-./install.sh --apply starship
-# or stow:
-mkdir -p ~/.config
-mv ~/.config/starship ~/.config/starship.bak 2>/dev/null
-stow -v starship
-```
-
-After: open a new shell. The terminal needs a Nerd Font for the icons
-(Ghostty has one built in).
-
-##### tmux
-
-`~/.config/tmux/tmux.conf`, prefix `C-a`. TPM and plugins are installed
-into `~/.config/tmux/plugins` on first start, not stored here.
-
-```sh
-# install (macOS: Brewfile)
-sudo apt install tmux git python3 python3-venv        # Ubuntu/Debian
-
-# link
-./install.sh --apply tmux
-# or stow:
-mkdir -p ~/.config/tmux                               # stays a real dir for plugins/
-mv ~/.config/tmux/tmux.conf ~/.config/tmux/tmux.conf.bak 2>/dev/null
-stow -v tmux
-```
-
-After: run `tmux`. The first start clones TPM and installs the plugins in
-the background (the status bar fills in when done). Reload the config with
-`prefix r`, install newly added plugins with `prefix I`, remove unused ones
-with `prefix Alt-u`.
-
-##### zed
-
-Editor config (`~/.config/zed`). The whole directory is linked because Zed
-rewrites `settings.json` when you change things in the UI; its `.gitignore`
-tracks only `settings.json`, `keymap.json`, `tasks.json`, `snippets/` and
-`themes/`, so app data (prompt library, conversations) stays out of git.
-
-```sh
-# install (macOS: Brewfile)
-curl -f https://zed.dev/install.sh | sh       # Linux
-
-# link (quit Zed first)
-./install.sh --apply zed
-# or stow:
-mkdir -p ~/.config
-mv ~/.config/zed ~/.config/zed.bak 2>/dev/null
-stow -v zed
-```
-
-After: open Zed. Extensions listed in `auto_install_extensions` (Vague
-theme, PHP/intelephense, …) install on first start. When you install a new
-extension, add it there too. `buffer_font_family` is Menlo, which only
-exists on macOS; Linux falls back to another font.
-
-##### zsh
-
-`~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`. Tools that aren't
-installed are skipped. How it's organized and why it starts fast:
-[zsh/README.md](zsh/README.md).
-
-```sh
-# install (macOS: Brewfile)
-sudo apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting
-
-# link
-./install.sh --apply zsh
-# or stow:
-mkdir -p ~/.config/zsh                        # stays a real dir for secrets.zsh
-mv ~/.zshenv ~/.zshenv.bak 2>/dev/null
-mv ~/.config/zsh/.zshrc ~/.config/zsh/.zshrc.bak 2>/dev/null
-mv ~/.config/zsh/.zprofile ~/.config/zsh/.zprofile.bak 2>/dev/null
-mv ~/.config/zsh/conf.d ~/.config/zsh/conf.d.bak 2>/dev/null
-stow -v zsh
-touch ~/.config/zsh/secrets.zsh && chmod 600 ~/.config/zsh/secrets.zsh
-```
-
-After: put tokens in `~/.config/zsh/secrets.zsh` (local, not tracked), e.g.
-`export NODE_AUTH_TOKEN=...`. On Linux make zsh the default shell with
-`chsh -s "$(command -v zsh)"` and log in again. Otherwise `exec zsh`.
+  and in `~/.config/git/config.personal`:
+  `[user] email = 17613536+mykola-kachmaryk@users.noreply.github.com`.
+  Check with `git config user.email` in a repo. The pattern needs `:*/**`: a
+  bare `:**` doesn't match the `/` in `owner/repo.git`.
 
 #### Daily use
 
-Edit files through their usual paths (`~/.config/nvim/...`); the changes
-land in this repo, so commit them here. After `git pull`, run
-`./install.sh --apply` again: it links new files and removes links to files that moved.
+Edit files through their usual paths (`~/.config/nvim/...`); the changes land
+in this repo, so commit them here. After `git pull`, run
+`./install.sh --apply` again: it links new files and removes links to files
+that moved.
 
-```sh
-cd ~/dotfiles
-stow -n -v nvim  # dry run
-stow nvim        # link a package
-stow -R nvim     # restow after adding files to a package
-stow -D nvim     # unlink
-```
+Stow by hand, from `~/dotfiles` (that's where `.stowrc` is read; elsewhere
+use `stow -d ~/dotfiles -t ~ <pkg>`):
 
-Run stow from `~/dotfiles`: that's where `.stowrc` is read from. From
-elsewhere use `stow -d ~/dotfiles -t ~ <pkg>`.
-
-| Flag | Meaning |
+| Command | Meaning |
 |---|---|
-| `-n` | Dry run, change nothing. Pair with `-v` to see what would happen |
-| `-v` | Verbose: print each link created/removed. Repeat (`-vv`, `--verbose=2`) for more detail, e.g. why something was skipped |
-| `-R` | Restow: unlink and link again |
-| `-D` | Delete: remove the package's links |
+| `stow -n -v nvim` | dry run, show what would happen |
+| `stow nvim` | link a package |
+| `stow -R nvim` | restow: unlink and link again, after adding files |
+| `stow -D nvim` | remove the package's links (do this before deleting a package) |
 
-Options can go before or after the package name, so `stow -v zsh -v` is
-the same as `stow -vv zsh`.
+`-v` prints each link; repeat it (`-vv`) for why something was skipped.
+Options can go before or after the package name.
 
 **Secret scan.** `.githooks/pre-commit` runs
-[gitleaks](https://github.com/gitleaks/gitleaks) on staged changes and
-blocks the commit if it finds keys, tokens or passwords, printing the file
-and line (secret redacted). `install.sh` turns it on with
-`git config core.hooksPath .githooks`. Without gitleaks installed the hook
-only warns. For a false positive, commit once with `git commit --no-verify`.
-Scan the whole history with `gitleaks git --log-opts="--all" --redact`.
+[gitleaks](https://github.com/gitleaks/gitleaks) on staged changes and blocks
+commits with keys, tokens or passwords (file and line shown, secret
+redacted). Without gitleaks it only warns. False positive: commit once with
+`git commit --no-verify`. Whole history: `gitleaks git --log-opts="--all" --redact`.
 
 #### Adding a new app
 
-Package one app per directory, never all of `~/.config`: it holds tokens
-and app state too.
+One app per directory, never all of `~/.config`: it holds tokens and app
+state too.
 
 ```sh
 cd ~/dotfiles
 mkdir -p <app>/.config
 cp -Rp ~/.config/<app> ~/.config/<app>.bak   # backup
-mv ~/.config/<app> <app>/.config/            # a directory (or a single file
-                                             # like ~/.config/<app>.toml)
+mv ~/.config/<app> <app>/.config/            # a directory, or a single file
 stow -n -v <app> && stow -v <app>
 ```
 
-Before committing:
-
-- check for secrets: `grep -rniE 'token|secret|api[_-]?key|password' <app>`
-- leave out caches, logs and nested `.git` directories
-- if the app's directory must also hold local untracked files, add it to
-  `REAL_DIRS` in `install.sh`
-- add a section under Packages: install, link, after
-- if the app comes from Homebrew, add it to the Brewfile: `brew bundle add <name> [--cask]`
-
+Before committing: check for secrets
+(`grep -rniE 'token|secret|api[_-]?key|password' <app>`), leave out caches,
+logs and nested `.git` directories, add the directory to `REAL_DIRS` in
+`install.sh` if it must also hold local untracked files, add a row under
+Packages, and add Homebrew apps to the Brewfile (`brew bundle add <name>`).
 `install.sh` picks up new packages automatically.
