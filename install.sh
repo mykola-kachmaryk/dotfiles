@@ -106,18 +106,42 @@ else
 fi
 
 for pkg in "$@"; do
-  [ "$pkg" = zsh ] || continue
+  case "$pkg" in
+    zsh)
+      secrets="$HOME/.config/zsh/secrets.zsh"
+      if [ ! -e "$secrets" ]; then
+        run touch "$secrets"
+        echo "Created empty $secrets for exports like tokens (not tracked in git)."
+      fi
+      run chmod 600 "$secrets"
 
-  secrets="$HOME/.config/zsh/secrets.zsh"
-  if [ ! -e "$secrets" ]; then
-    run touch "$secrets"
-    echo "Created empty $secrets for exports like tokens (not tracked in git)."
-  fi
-  run chmod 600 "$secrets"
-
-  case "${SHELL:-}" in
-    */zsh) ;;
-    *) echo "Default shell is ${SHELL:-unknown}. Switch with: chsh -s \"\$(command -v zsh)\"" ;;
+      case "${SHELL:-}" in
+        */zsh) ;;
+        *) echo "Default shell is ${SHELL:-unknown}. Switch with: chsh -s \"\$(command -v zsh)\"" ;;
+      esac
+      ;;
+    git)
+      identity="$HOME/.config/git/config.local"
+      if [ ! -e "$identity" ]; then
+        if [ "$DRY_RUN" = 1 ]; then
+          echo "would create: $identity"
+        else
+          cat > "$identity" <<'EOF'
+# Local git identity for this machine. Not tracked in ~/dotfiles.
+# git refuses to commit until user.name and user.email are set here.
+#
+# [user]
+# 	name = Your Name
+# 	email = you@example.com
+#
+# Different email for repos cloned via an SSH alias, e.g. personal GitHub:
+# [includeIf "hasconfig:remote.*.url:git@github.com-personal:*/**"]
+# 	path = config.personal
+EOF
+        fi
+        echo "Created $identity: set your git name and email there."
+      fi
+      ;;
   esac
 done
 

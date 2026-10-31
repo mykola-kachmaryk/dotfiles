@@ -6,6 +6,7 @@ directory is a package whose contents mirror `$HOME`:
 ```
 ~/dotfiles/
 ├── ghostty/.config/ghostty/         → ~/.config/ghostty
+├── git/.config/git/{config,ignore,template} → ~/.config/git/...
 ├── nvim/.config/nvim/               → ~/.config/nvim
 ├── starship/.config/starship.toml   → ~/.config/starship.toml
 ├── tmux/.config/tmux/tmux.conf      → ~/.config/tmux/tmux.conf
@@ -34,10 +35,12 @@ Then install each package's tools and do its "after" steps below.
 `install.sh`:
 
 - moves conflicting files to `~/.dotfiles-backup/<timestamp>/`
-- keeps `~/.config`, `~/.config/zsh` and `~/.config/tmux` as real
-  directories, so stow doesn't link them into this repo and local files
-  (secrets, tmux plugins) stay out of it (`REAL_DIRS` in the script)
-- creates `~/.config/zsh/secrets.zsh` with mode 600
+- keeps `~/.config`, `~/.config/zsh`, `~/.config/tmux` and `~/.config/git`
+  as real directories, so stow doesn't link them into this repo and local
+  files (secrets, tmux plugins, git identity) stay out of it (`REAL_DIRS` in
+  the script)
+- creates `~/.config/zsh/secrets.zsh` with mode 600 and a
+  `~/.config/git/config.local` template
 - is safe to re-run
 
 To link a package with plain stow instead, use the "stow" commands in its
@@ -67,6 +70,49 @@ stow -v ghostty
 After: reload with `Cmd+Shift+,` (macOS) / `Ctrl+Shift+,` (Linux). On macOS,
 keep `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`
 empty, since it overrides this config.
+
+##### git
+
+Global git config (`~/.config/git`): aliases, global ignore, commit message
+template. Name and email are **not** in the repo: `config` includes
+`~/.config/git/config.local`, a local file per machine, and sets
+`user.useConfigOnly` so git refuses to commit until that file sets an
+identity.
+
+```sh
+# install
+brew install git                      # macOS
+sudo apt install git                  # Ubuntu/Debian
+
+# link
+./install.sh git                      # also creates a config.local template
+# or stow:
+mkdir -p ~/.config/git                # stays a real dir for config.local
+for f in config ignore template; do mv ~/.config/git/$f ~/.config/git/$f.bak 2>/dev/null; done
+stow -v git
+```
+
+After: set your identity in `~/.config/git/config.local`:
+
+```ini
+[user]
+	name = Your Name
+	email = you@work.example                        # default (work)
+
+# repos cloned via the github.com-personal SSH alias get the personal email
+[includeIf "hasconfig:remote.*.url:git@github.com-personal:*/**"]
+	path = config.personal
+```
+
+and in `~/.config/git/config.personal`:
+
+```ini
+[user]
+	email = 17613536+mykola-kachmaryk@users.noreply.github.com
+```
+
+Check with `git config user.email` inside a repo. The URL pattern needs
+`:*/**`: a bare `:**` doesn't match the `/` in `owner/repo.git`.
 
 ##### nvim
 
