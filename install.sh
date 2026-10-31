@@ -156,9 +156,10 @@ for pkg in "$@"; do
       secrets="$HOME/.config/zsh/secrets.zsh"
       if [ ! -e "$secrets" ]; then
         run touch "$secrets"
-        echo "Created empty $secrets for exports like tokens (not tracked in git)."
+        [ "$DRY_RUN" = 1 ] ||
+          echo "Created empty $secrets for exports like tokens (not tracked in git)."
       fi
-      run chmod 600 "$secrets"
+      [ ! -e "$secrets" ] || run chmod 600 "$secrets"
 
       case "${SHELL:-}" in
         */zsh) ;;

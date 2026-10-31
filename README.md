@@ -31,11 +31,16 @@ brew bundle --file ~/dotfiles/Brewfile   # tools and apps (npm packages fail unt
 sudo apt install stow git gitleaks
 git clone <repo> ~/dotfiles && cd ~/dotfiles
 
+# Arch: everything is in the repos, including fnm, Ghostty, Zed and Neovim
+sudo pacman -S stow git gitleaks zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting \
+  tmux python fnm starship neovim ripgrep fd ghostty zed ttf-jetbrains-mono-nerd
+git clone <repo> ~/dotfiles && cd ~/dotfiles
+
 ./install.sh                          # dry run: what would be backed up and linked
 ./install.sh --apply                  # all packages, or e.g. ./install.sh --apply zsh tmux
 
-# Node via fnm (macOS: fnm comes with the Brewfile)
-curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.local/bin --skip-shell   # Linux only
+# Node via fnm (macOS: Brewfile, Arch: pacman)
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.local/bin --skip-shell   # Ubuntu/Debian only
 exec zsh
 fnm install 24 && fnm default 24
 brew bundle                           # macOS: now also the global npm packages
@@ -68,7 +73,7 @@ the macOS-only block.
 
 #### Packages
 
-| Package | What | Linux install (macOS: Brewfile) |
+| Package | What | Ubuntu/Debian install (macOS: Brewfile, Arch: pacman line above) |
 |---|---|---|
 | aerospace | tiling window manager (macOS, archived) | — |
 | ghostty | terminal | https://ghostty.org/docs/install |
