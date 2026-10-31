@@ -1,3 +1,10 @@
+# Started in a folder that was deleted (e.g. a removed git worktree)? zsh then
+# can't tell where it is ($PWD is "."), and brew and fnm fail. Go home instead
+if [[ $PWD != /* || ! -d $PWD ]]; then
+  print -P "%F{yellow}The current folder no longer exists, starting in ~%f"
+  cd ~
+fi
+
 # Shell options and keys that oh-my-zsh used to set (see 00-omz.zsh)
 
 set -o vi

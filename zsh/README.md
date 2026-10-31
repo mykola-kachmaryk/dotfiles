@@ -1,7 +1,7 @@
 # zsh
 
 Plain zsh (no framework), split into small files. A new shell or tmux pane
-starts in about 0.12 s.
+starts in about 0.08 s.
 
 ## How it loads
 
@@ -17,12 +17,12 @@ starts in about 0.12 s.
 |---|---|
 | `00-omz.zsh` | oh-my-zsh, disabled (kept commented out, see below) |
 | `00-options.zsh` | vi mode, shell options, Home/End/Delete/Ctrl+arrow keys |
-| `05-path.zsh` | Homebrew, nvm and the default Node, Herd/PHP, pnpm, `~/.local/bin` |
-| `10-completion.zsh` | completion (`compinit`), nvm's completion, completion styles |
+| `05-path.zsh` | Homebrew, fnm (Node), Herd/PHP, pnpm, `~/.local/bin`; old nvm setup commented out |
+| `10-completion.zsh` | completion (`compinit`), completion styles |
 | `20-history.zsh` | history file and options, Up/Down prefix search |
 | `30-aliases.zsh` | your aliases (git, pnpm, eza, zoxide, nvim) |
 | `40-tools.zsh` | zoxide, zsh-autosuggestions |
-| `50-herd.zsh` | Herd's hook: switches Node on `cd` into a project with `.nvmrc` |
+| `50-herd.zsh` | Herd's nvm hook, disabled (fnm switches Node on `cd` now) |
 | `90-prompt.zsh` | zsh-syntax-highlighting, starship |
 
 `secrets.zsh` holds tokens. It is local only (ignored by git) and mode 600.
@@ -36,13 +36,23 @@ Measured with `time zsh -l -i -c exit`:
 | oh-my-zsh + nvm loaded normally | ~0.67 s (~0.44 s measured in a tmux pane) |
 | nvm with `--no-use` | ~0.16 s |
 | + no oh-my-zsh | ~0.12 s |
+| + fnm instead of nvm | ~0.08 s |
 
-**nvm with `--no-use`** (`05-path.zsh`). Loading nvm normally runs
-`nvm use default`, which took ~0.4 s on every new shell. Now nvm loads
-without it (~40 ms) and the default Node's `bin` is put on `PATH` directly,
-with the same `NVM_BIN`, `NVM_INC` and `MANPATH` that `nvm use` sets. All nvm
-commands and Herd's `.nvmrc` switching work as before. A default alias like
-`lts/*` can't be resolved this way, so then it falls back to `nvm use`.
+**fnm instead of nvm** (`05-path.zsh`). nvm is a large shell script: even
+with `--no-use` it took ~40 ms, plus ~17 ms for Herd's hook on every start.
+fnm is a small program that does the same in a few ms:
+
+- puts the default Node on `PATH` (`fnm default 24`)
+- switches version on `cd` into a project with `.nvmrc` or `.node-version`,
+  also from its subfolders (`--version-file-strategy recursive`, like nvm),
+  and back to the default when you leave
+- if a project asks for a version that isn't installed, it prints an error
+  and stays on the default: run `fnm install` there (Herd's nvm hook
+  installed it automatically)
+
+Commands: `fnm install 22`, `fnm use 22`, `fnm default 24`, `fnm list`.
+Herd's own Node features don't use this: Herd has its own bundled nvm.
+Global npm packages are per Node version; the Brewfile lists them.
 
 **No oh-my-zsh.** Only its `git` plugin was enabled (≈180 aliases, unused)
 and starship draws the prompt, so its theme did nothing. What it set that
@@ -54,11 +64,8 @@ matters now lives in `00-options.zsh`, `10-completion.zsh` and
 **Completion check once a day** (`10-completion.zsh`). oh-my-zsh checked the
 permissions of every completion directory on each start (lots of file-system
 calls, which is slow right after the Mac has been idle). Now the full check
-runs at most once a day; otherwise the cached dump is used.
-
-**nvm's completion after `compinit`.** nvm's completion script runs a full
-`compinit` itself if none has run yet, so it is loaded in
-`10-completion.zsh`, not in `05-path.zsh`.
+runs at most once a day, or when a completion directory changed (a new tool
+was installed); otherwise the cached dump is used.
 
 ## Measuring
 
@@ -75,8 +82,10 @@ ZDOTDIR=~/.config/zsh zsh -f -i -c 'zmodload zsh/datetime; source ~/.zshenv; sou
 
 ## Going back
 
-- **nvm loaded normally:** in `05-path.zsh`, uncomment the `nvm.sh` line and
-  delete the `--no-use` block below it.
+- **nvm instead of fnm:** in `05-path.zsh`, uncomment the nvm block and
+  delete the fnm lines; uncomment the nvm completion line in
+  `10-completion.zsh` and the Herd line in `50-herd.zsh`. `~/.nvm` is still
+  installed.
 - **oh-my-zsh:** uncomment `00-omz.zsh`, delete `00-options.zsh` and
   `10-completion.zsh`, uncomment the nvm completion line in `05-path.zsh` and
   the two old `bindkey` lines in `20-history.zsh` (and remove the new ones).

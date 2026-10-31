@@ -36,10 +36,10 @@ git clone <repo> ~/dotfiles && cd ~/dotfiles
 ./install.sh -n                       # dry run: what would be backed up and linked
 ./install.sh                          # all packages, or e.g. ./install.sh zsh tmux
 
-# Node via nvm (PROFILE=/dev/null: the zsh config already sets nvm up)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | PROFILE=/dev/null bash
+# Node via fnm (macOS: fnm comes with the Brewfile)
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.local/bin --skip-shell   # Linux only
 exec zsh
-nvm install 24 && nvm alias default 24
+fnm install 24 && fnm default 24
 brew bundle                           # macOS: now also the global npm packages
 ```
 

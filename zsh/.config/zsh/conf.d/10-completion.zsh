@@ -5,16 +5,24 @@ ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
 mkdir -p "${ZSH_COMPDUMP:h}"
 
 autoload -Uz compinit
-# Full check (slow) at most once a day, otherwise trust the dump
-if [[ -n $ZSH_COMPDUMP(#qN.mh-24) ]]; then
+# Full check (slow) at most once a day, otherwise trust the dump. Also do the
+# full check when a completion directory changed since the dump was written,
+# so a newly installed tool's completion works right away
+_comp_fresh=1
+for _comp_dir in $fpath; do
+  [[ $_comp_dir -nt $ZSH_COMPDUMP ]] && { _comp_fresh=0; break; }
+done
+if (( _comp_fresh )) && [[ -n $ZSH_COMPDUMP(#qN.mh-24) ]]; then
   compinit -C -d "$ZSH_COMPDUMP"
 else
   compinit -d "$ZSH_COMPDUMP"
 fi
+unset _comp_fresh _comp_dir
 
 # nvm's completion, moved here from 05-path.zsh: it runs its own slow compinit
-# unless compinit has already run (which oh-my-zsh used to do first)
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# unless compinit has already run (which oh-my-zsh used to do first).
+# Disabled while testing fnm, whose completion comes with Homebrew (_fnm).
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Case-insensitive, then partial-word matching
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'

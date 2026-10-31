@@ -38,10 +38,11 @@ brew "tree-sitter-cli"
 # Dev tools
 brew "composer"
 brew "deno"
+brew "fnm"
 brew "lazydocker"
 
-# Global npm packages. Need Node from nvm, so on a new machine these only
-# install on a second `brew bundle`, after nvm (see README)
+# Global npm packages. Need Node from fnm, so on a new machine these only
+# install on a second `brew bundle`, after `fnm install` (see README)
 npm "@typescript/native-preview"
 npm "corepack"
 
