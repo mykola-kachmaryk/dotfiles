@@ -138,10 +138,29 @@ the macOS-only block.
   Check with `git config user.email` in a repo. The pattern needs `:*/**`: a
   bare `:**` doesn't match the `/` in `owner/repo.git`.
 
-  That split only matches repos cloned via the `github.com-personal` SSH
-  alias (`Host github.com-personal` in `~/.ssh/config`, not in this repo). On
-  a personal-only machine, skip it and put the noreply email straight into
-  `config.local`'s `[user]`.
+  On a **personal-only machine**, skip the split: one SSH key on your
+  personal GitHub account, normal `git@github.com:` URLs, and the noreply
+  email straight in `config.local`'s `[user]`.
+
+  On a machine with **work and personal** GitHub accounts, the split needs
+  the `github.com-personal` SSH alias. GitHub tells accounts apart by SSH
+  key, and the alias makes SSH use the personal key. Add it to
+  `~/.ssh/config` (not in this repo), add that key to your personal account,
+  and clone personal repos as `git@github.com-personal:mykola-kachmaryk/<repo>.git`:
+
+  ```
+  Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_personal
+    IdentitiesOnly yes
+    # macOS only: keep the key's passphrase in the Keychain
+    # UseKeychain yes
+    # AddKeysToAgent yes
+  ```
+
+  `ssh -T git@github.com` should greet your work account,
+  `ssh -T git@github.com-personal` your personal one.
 
 #### Daily use
 
