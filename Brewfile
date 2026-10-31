@@ -40,7 +40,8 @@ brew "composer"
 brew "deno"
 brew "lazydocker"
 
-# Global npm packages (needs node, from nvm)
+# Global npm packages. Need Node from nvm, so on a new machine these only
+# install on a second `brew bundle`, after nvm (see README)
 npm "@typescript/native-preview"
 npm "corepack"
 

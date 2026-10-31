@@ -27,7 +27,7 @@ Works on macOS and Linux.
 ```sh
 # macOS: install Homebrew (https://brew.sh), then
 git clone <repo> ~/dotfiles && cd ~/dotfiles
-brew bundle --file ~/dotfiles/Brewfile   # all tools and apps
+brew bundle --file ~/dotfiles/Brewfile   # tools and apps (npm packages fail until Node is in)
 
 # Ubuntu/Debian (24.04+)
 sudo apt install stow git gitleaks
@@ -35,6 +35,12 @@ git clone <repo> ~/dotfiles && cd ~/dotfiles
 
 ./install.sh -n                       # dry run: what would be backed up and linked
 ./install.sh                          # all packages, or e.g. ./install.sh zsh tmux
+
+# Node via nvm (PROFILE=/dev/null: the zsh config already sets nvm up)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | PROFILE=/dev/null bash
+exec zsh
+nvm install 24 && nvm alias default 24
+brew bundle                           # macOS: now also the global npm packages
 ```
 
 Then do each package's "after" steps below (on Linux, also its install
@@ -274,14 +280,13 @@ exists on macOS; Linux falls back to another font.
 
 ##### zsh
 
-`~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`. Tools that aren't
-installed are skipped.
+`~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`, plain zsh without a
+framework. Tools that aren't installed are skipped. nvm is loaded on first
+use (`nvm ...` or a project with `.nvmrc`), which keeps startup under 0.1 s.
 
 ```sh
 # install (macOS: Brewfile)
 sudo apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting
-# oh-my-zsh, without replacing .zshrc
-KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # link
 ./install.sh zsh
