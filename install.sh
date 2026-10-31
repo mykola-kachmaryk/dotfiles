@@ -164,6 +164,16 @@ for pkg in "$@"; do
         */zsh) ;;
         *) echo "Default shell is ${SHELL:-unknown}. Switch with: chsh -s \"\$(command -v zsh)\"" ;;
       esac
+
+      # The zsh config gets Node from fnm (05-path.zsh)
+      if ! command -v fnm >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/fnm" ]; then
+        if [ "$(uname -s)" = Darwin ]; then
+          echo "Install fnm for Node: brew install fnm (or brew bundle), then: fnm install 24 && fnm default 24"
+        else
+          echo "Install fnm for Node: curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.local/bin --skip-shell"
+          echo "  then in a new shell: fnm install 24 && fnm default 24"
+        fi
+      fi
       ;;
     git)
       identity="$HOME/.config/git/config.local"
