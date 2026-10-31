@@ -10,6 +10,9 @@ for brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbre
 done
 unset brew
 
+# `brew bundle` uses ~/dotfiles/Brewfile from any directory
+export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
+
 # nvm (loaded before the PATH prepends below, as originally)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"

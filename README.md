@@ -15,6 +15,7 @@ directory is a package whose contents mirror `$HOME`:
 ├── zed/.config/zed/                 → ~/.config/zed
 ├── zsh/.zshenv                      → ~/.zshenv
 ├── zsh/.config/zsh/...              → ~/.config/zsh/...
+├── Brewfile                         # Homebrew packages and apps (not linked)
 ├── install.sh                       # set up a new machine
 └── .stowrc                          # stow defaults: target ~, ignore .DS_Store
 ```
@@ -24,15 +25,35 @@ Works on macOS and Linux.
 #### New machine
 
 ```sh
-brew install stow git gitleaks        # macOS
-sudo apt install stow git gitleaks    # Ubuntu/Debian (24.04+)
-
+# macOS: install Homebrew (https://brew.sh), then
 git clone <repo> ~/dotfiles && cd ~/dotfiles
+brew bundle --file ~/dotfiles/Brewfile   # all tools and apps
+
+# Ubuntu/Debian (24.04+)
+sudo apt install stow git gitleaks
+git clone <repo> ~/dotfiles && cd ~/dotfiles
+
 ./install.sh -n                       # dry run: what would be backed up and linked
 ./install.sh                          # all packages, or e.g. ./install.sh zsh tmux
 ```
 
-Then install each package's tools and do its "after" steps below.
+Then do each package's "after" steps below (on Linux, also its install
+commands).
+
+The `Brewfile` lists everything installed with Homebrew, with apps and
+editor extensions in a macOS-only block. The zsh config sets
+`HOMEBREW_BUNDLE_FILE` to it, so plain `brew bundle` commands use it from
+any directory:
+
+```sh
+brew bundle                           # install what's missing
+brew bundle add <name> [--cask]       # install later? add it here
+brew bundle remove <name>
+brew bundle cleanup                   # list installed packages not in the Brewfile
+```
+
+Edit it by hand or with `add`/`remove`: `brew bundle dump --force` would
+drop its grouping and the macOS-only block.
 
 `install.sh`:
 
@@ -79,9 +100,8 @@ Terminal config (`~/.config/ghostty`). `auto/theme.ghostty` holds the theme
 picked in Ghostty; commit it when it changes.
 
 ```sh
-# install
-brew install --cask ghostty           # macOS
-                                      # Linux: https://ghostty.org/docs/install
+# install (macOS: Brewfile)
+# Linux: https://ghostty.org/docs/install
 
 # link
 ./install.sh ghostty
@@ -104,8 +124,7 @@ template. Name and email are **not** in the repo: `config` includes
 identity.
 
 ```sh
-# install
-brew install git                      # macOS
+# install (macOS: Brewfile)
 sudo apt install git                  # Ubuntu/Debian
 
 # link
@@ -167,8 +186,7 @@ LazyVim config (`~/.config/nvim`). Plugins are installed by lazy.nvim from
 `lazy-lock.json`, not stored here.
 
 ```sh
-# install
-brew install neovim git ripgrep fd                            # macOS
+# install (macOS: Brewfile)
 sudo apt install git ripgrep fd-find build-essential          # Ubuntu/Debian
 # plus Neovim itself: apt's version is often too old for LazyVim, use
 # https://github.com/neovim/neovim/releases
@@ -191,11 +209,11 @@ starship here with `STARSHIP_CONFIG`, instead of the default
 `~/.config/starship.toml`.
 
 ```sh
-# install
-brew install starship                                 # macOS
-brew install --cask font-jetbrains-mono-nerd-font
+# install (macOS: Brewfile)
 curl -sS https://starship.rs/install.sh | sh          # Linux
-                                                      # font: https://www.nerdfonts.com
+# Nerd Font for non-Ghostty terminals:
+brew install --cask font-jetbrains-mono-nerd-font     # macOS
+                                                      # Linux: https://www.nerdfonts.com
 
 # link
 ./install.sh starship
@@ -214,8 +232,7 @@ After: open a new shell. The terminal needs a Nerd Font for the icons
 into `~/.config/tmux/plugins` on first start, not stored here.
 
 ```sh
-# install
-brew install tmux                                     # macOS
+# install (macOS: Brewfile)
 sudo apt install tmux git python3 python3-venv        # Ubuntu/Debian
 
 # link
@@ -239,8 +256,7 @@ tracks only `settings.json`, `keymap.json`, `tasks.json`, `snippets/` and
 `themes/`, so app data (prompt library, conversations) stays out of git.
 
 ```sh
-# install
-brew install --cask zed                       # macOS
+# install (macOS: Brewfile)
 curl -f https://zed.dev/install.sh | sh       # Linux
 
 # link (quit Zed first)
@@ -262,8 +278,7 @@ exists on macOS; Linux falls back to another font.
 installed are skipped.
 
 ```sh
-# install
-brew install zoxide eza zsh-autosuggestions zsh-syntax-highlighting    # macOS
+# install (macOS: Brewfile)
 sudo apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting
 # oh-my-zsh, without replacing .zshrc
 KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -340,5 +355,6 @@ Before committing:
 - if the app's directory must also hold local untracked files, add it to
   `REAL_DIRS` in `install.sh`
 - add a section under Packages: install, link, after
+- if the app comes from Homebrew, add it to the Brewfile: `brew bundle add <name> [--cask]`
 
 `install.sh` picks up new packages automatically.
