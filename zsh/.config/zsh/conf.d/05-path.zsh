@@ -15,7 +15,34 @@ export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
 
 # nvm (loaded before the PATH prepends below, as originally)
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Previous setup, kept for reference. Loading nvm normally also runs
+# `nvm use default`, which takes ~0.4 s on every new shell. To go back,
+# uncomment the nvm.sh line and delete the "--no-use" block below.
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Load nvm without `nvm use` (~40 ms). nvm and its functions stay available
+# (Herd's .nvmrc hook in 50-herd.zsh needs them); only the default Node is
+# put on PATH here instead, which is all `nvm use default` did at startup.
+if [[ -s $NVM_DIR/nvm.sh ]]; then
+  . "$NVM_DIR/nvm.sh" --no-use
+  # Default alias "24" -> highest installed v24.x (numeric sort, so v24.21 > v24.9)
+  _nvm_bin=()
+  [[ -r $NVM_DIR/alias/default ]] &&
+    _nvm_bin=($NVM_DIR/versions/node/v${$(<$NVM_DIR/alias/default)#v}*/bin(N/nOn[1]))
+  # Defaults like "lts/*" need nvm to resolve them: fall back to the slow way
+  if [[ -n $_nvm_bin ]]; then
+    # Same variables `nvm use` sets
+    export NVM_BIN=$_nvm_bin NVM_INC=${_nvm_bin:h}/include/node
+    export MANPATH="${_nvm_bin:h}/share/man:$MANPATH"
+    path=($_nvm_bin $path)
+  else
+    nvm use --silent default
+  fi
+  unset _nvm_bin
+fi
+
+# Unchanged from the previous setup
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 if [[ $OSTYPE == darwin* ]]; then
