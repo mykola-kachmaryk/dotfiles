@@ -73,15 +73,12 @@ if [[ $OSTYPE == darwin* ]]; then
   export HERD_PHP_85_INI_SCAN_DIR="$HOME/Library/Application Support/Herd/config/php/85/"
 fi
 
-# deno
-[ -f "$HOME/.deno/env" ] && . "$HOME/.deno/env"
-
 # user-installed tools (pipx, uv, ...)
 export PATH="$HOME/.local/bin:$PATH"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+# bun global packages (bun add -g). Install bun itself with the Brewfile
+# (`brew "bun"`); uncomment this only if you install global packages with it
+# [[ -d ~/.bun/bin ]] && path=(~/.bun/bin $path)
 
 # Typescript LSP
 export NODE_OPTIONS="--max-old-space-size=4096"
