@@ -36,5 +36,7 @@
         co = checkout
         prom = pull --rebase origin master
         promain = pull --rebase origin main
+        # pull --rebase the remote's default branch, master or main
+        pdef = "!git pull --rebase origin \"$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@')\""
         lol = log --graph --decorate --pretty=oneline --abbrev-commit
         hist = log --pretty=format:'%C(yellow)%h%C(reset) %ad | %C(75)%s%C(reset) %C(yellow)%d%C(reset) [%an]' --graph --date=short --branches --all
