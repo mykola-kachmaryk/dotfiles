@@ -32,8 +32,7 @@ fi
 # deno
 [ -f "$HOME/.deno/env" ] && . "$HOME/.deno/env"
 
-# opencode
-export PATH="$HOME/.opencode/bin:$PATH"
+# user-installed tools (pipx, uv, ...)
 export PATH="$HOME/.local/bin:$PATH"
 
 # bun
