@@ -13,6 +13,8 @@ Linux.
 ├── nvim/.config/nvim/               → ~/.config/nvim
 ├── starship/.config/starship/       → ~/.config/starship
 ├── tmux/.config/tmux/tmux.conf      → ~/.config/tmux/tmux.conf
+├── vscodium/Library/Application Support/VSCodium/User/settings.json
+│                                    → same path under ~       (macOS only)
 ├── zed/.config/zed/                 → ~/.config/zed
 ├── zsh/.zshenv, zsh/.config/zsh/    → ~/.zshenv, ~/.config/zsh/
 ├── Brewfile                         # Homebrew packages and apps (not linked)
@@ -114,6 +116,8 @@ the macOS-only block.
   (`brew install --cask font-jetbrains-mono-nerd-font`).
 - **tmux:** run `tmux`; the plugins install in the background. `prefix r`
   reloads, `prefix I` installs new plugins, `prefix Alt-u` removes unused.
+- **vscodium:** quit VSCodium before linking. Only `settings.json` is
+  linked; extensions (and the Vague theme) come from the Brewfile.
 - **zed:** quit Zed before linking. The whole directory is linked because Zed
   rewrites `settings.json`; only config files are tracked (allow-list
   `.gitignore`). Add new extensions to `auto_install_extensions`. On Arch

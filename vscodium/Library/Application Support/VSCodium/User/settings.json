@@ -1,0 +1,89 @@
+// "workbench.startupEditor": "none",
+// "editor.fontLigatures": false
+{
+  // "editor.lineHeight": 1.5,
+  "editor.rulers": [120],
+  "workbench.startupEditor": "none",
+  "editor.formatOnSave": true,
+  "files.hotExit": "onExitAndWindowClose",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "workbench.colorCustomizations": {
+    "editorRuler.foreground": "#908e8e73",
+  },
+  "editor.tabSize": 2,
+  "files.autoSave": "onFocusChange",
+  "editor.letterSpacing": -0.1,
+  "editor.fontLigatures": true,
+  "editor.cursorBlinking": "expand",
+  "editor.guides.bracketPairs": true,
+  "workbench.iconTheme": "vscode-icons",
+  // "terminal.integrated.fontFamily": "Jetbrains Mono",
+  "terminal.integrated.fontSize": 15,
+  // "editor.fontWeight": 200,
+  "files.exclude": {
+    "": true,
+    "**/.git": false,
+  },
+  // "workbench.sideBar.location": "right",
+  "editor.inlineSuggest.suppressSuggestions": true,
+  "editor.minimap.enabled": false,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "editor.accessibilitySupport": "off",
+  "[php]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+  },
+  "editor.fontVariations": false,
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "editor.fontSize": 14,
+  "editor.fontWeight": "normal",
+  "editor.stickyScroll.enabled": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "name": "One Dark italic",
+        "scope": [
+          "comment",
+          "entity.other.attribute-name",
+          "keyword",
+          "markup.underline.link",
+          "storage.modifier",
+          "storage.type",
+          "string.url",
+          "variable.language.super",
+          "variable.language.this",
+        ],
+        "settings": {
+          "fontStyle": "italic",
+        },
+      },
+      {
+        "name": "One Dark italic reset",
+        "scope": [
+          "keyword.operator",
+          "keyword.other.type",
+          "storage.modifier.import",
+          "storage.modifier.package",
+          "storage.type.built-in",
+          "storage.type.function.arrow",
+          "storage.type.generic",
+          "storage.type.java",
+          "storage.type.primitive",
+        ],
+        "settings": {
+          "fontStyle": "",
+        },
+      },
+    ],
+  },
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "workbench.colorTheme": "Vague",
+}

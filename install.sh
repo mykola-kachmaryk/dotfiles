@@ -45,10 +45,18 @@ BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
 # Directories that must stay real so they can hold local, untracked files.
 # Stow links their contents instead of the directory itself.
-REAL_DIRS=".config .config/zsh .config/tmux .config/git"
+# One per line, since some names contain spaces.
+REAL_DIRS='.config
+.config/zsh
+.config/tmux
+.config/git
+Library
+Library/Application Support
+Library/Application Support/VSCodium
+Library/Application Support/VSCodium/User'
 
 # Packages for macOS-only apps, skipped on other systems
-MACOS_ONLY="aerospace karabiner"
+MACOS_ONLY="aerospace karabiner vscodium"
 
 # Packages kept in git but not installed by default. Name one to install it.
 SKIP="aerospace"
@@ -63,10 +71,7 @@ run() {
 }
 
 is_real_dir() {
-  case " $REAL_DIRS " in
-    *" $1 "*) return 0 ;;
-  esac
-  return 1
+  printf '%s\n' "$REAL_DIRS" | grep -qxF -- "$1"
 }
 
 # Move ~/<rel> to the backup dir unless it's missing or already linked into this repo
