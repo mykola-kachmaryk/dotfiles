@@ -145,4 +145,9 @@ EOF
   esac
 done
 
+# Secret scan before each commit in this repo (.githooks/pre-commit)
+run git -C "$DOTFILES" config core.hooksPath .githooks
+command -v gitleaks >/dev/null 2>&1 ||
+  echo "Install gitleaks to enable the pre-commit secret scan: brew install gitleaks"
+
 echo "Done: $*"

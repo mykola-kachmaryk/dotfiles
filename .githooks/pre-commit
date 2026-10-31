@@ -1,0 +1,17 @@
+#!/bin/sh
+# Block commits that contain secrets (keys, tokens, passwords).
+# Enabled by install.sh: git config core.hooksPath .githooks
+# Bypass a false positive once with: git commit --no-verify
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not installed, secret scan skipped." >&2
+  echo "            Install it: brew install gitleaks" >&2
+  exit 0
+fi
+
+# gitleaks >= 8.19 has `git --pre-commit`; older versions (e.g. Ubuntu's apt) use `protect`
+if gitleaks git --help >/dev/null 2>&1; then
+  exec gitleaks git --pre-commit --staged --redact --no-banner --verbose --log-level warn
+else
+  exec gitleaks protect --staged --redact --no-banner --verbose --log-level warn
+fi

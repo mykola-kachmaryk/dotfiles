@@ -22,8 +22,8 @@ Works on macOS and Linux.
 #### New machine
 
 ```sh
-brew install stow git                 # macOS
-sudo apt install stow git             # Ubuntu/Debian
+brew install stow git gitleaks        # macOS
+sudo apt install stow git gitleaks    # Ubuntu/Debian (24.04+)
 
 git clone <repo> ~/dotfiles && cd ~/dotfiles
 ./install.sh -n                       # dry run: what would be backed up and linked
@@ -41,6 +41,7 @@ Then install each package's tools and do its "after" steps below.
   the script)
 - creates `~/.config/zsh/secrets.zsh` with mode 600 and a
   `~/.config/git/config.local` template
+- enables the secret-scanning pre-commit hook (see Daily use)
 - is safe to re-run
 
 To link a package with plain stow instead, use the "stow" commands in its
@@ -260,6 +261,14 @@ elsewhere use `stow -d ~/dotfiles -t ~ <pkg>`.
 
 Options can go before or after the package name, so `stow -v zsh -v` is
 the same as `stow -vv zsh`.
+
+**Secret scan.** `.githooks/pre-commit` runs
+[gitleaks](https://github.com/gitleaks/gitleaks) on staged changes and
+blocks the commit if it finds keys, tokens or passwords, printing the file
+and line (secret redacted). `install.sh` turns it on with
+`git config core.hooksPath .githooks`. Without gitleaks installed the hook
+only warns. For a false positive, commit once with `git commit --no-verify`.
+Scan the whole history with `gitleaks git --log-opts="--all" --redact`.
 
 #### Adding a new app
 
