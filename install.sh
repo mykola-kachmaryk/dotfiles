@@ -14,7 +14,7 @@ BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
 # Directories that must stay real so they can hold local, untracked files.
 # Stow links their contents instead of the directory itself.
-REAL_DIRS=".config .config/zsh .config/tmux"
+REAL_DIRS=".config .config/zsh .config/tmux .config/git"
 
 DRY_RUN=0
 if [ "${1:-}" = "-n" ]; then
