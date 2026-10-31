@@ -6,6 +6,10 @@
 #   brew bundle add <name> [--cask] / brew bundle remove <name>
 #   brew bundle cleanup             list installed packages missing from here
 #
+# Never run `brew bundle cleanup --force`: it can't see the dependencies of
+# qmk (its whole toolchain) or of the npm entries (Homebrew's node), so it
+# uninstalls them and breaks those tools.
+#
 # Edit by hand or with add/remove; `brew bundle dump --force` would drop the
 # grouping and the macOS-only block below.
 
@@ -75,15 +79,14 @@ if OS.mac?
 
   # Apps
   cask "1password"
-  cask "aldente"
   cask "beekeeper-studio"
   cask "betterdisplay"
   cask "bruno"
-  cask "caffeine"
   cask "claude"
   cask "claude-code"
   cask "dbeaver-community"
-  cask "dimble"
+  cask "dimble" if MacOS.version >= :golden_gate # needs macOS 27
+  cask "domzilla-caffeine"
   cask "figma"
   cask "fork"
   cask "gcc-arm-embedded"
