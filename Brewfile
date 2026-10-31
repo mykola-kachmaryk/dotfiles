@@ -45,7 +45,7 @@ npm "@typescript/native-preview"
 npm "corepack"
 
 if OS.mac?
-  tap "fif7y/tap", trusted: { casks: ["pelmet"] }
+  tap "fif7y/tap", trusted: { casks: ["dimble"] }
 
   # Apps
   cask "1password"
@@ -55,11 +55,11 @@ if OS.mac?
   cask "claude"
   cask "claude-code"
   cask "dbeaver-community"
+  cask "dimble"
   cask "fork"
   cask "ghostty"
   cask "herd"
   cask "orbstack"
-  cask "pelmet"
   cask "slack"
   cask "stats"
   cask "vscodium"
