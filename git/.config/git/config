@@ -5,6 +5,30 @@
 [user]
 	useConfigOnly = true	# refuse to commit until config.local sets an identity
 
+[init]
+	defaultBranch = main
+
+[push]
+	autoSetupRemote = true	# first push of a new branch sets its upstream
+
+[fetch]
+	prune = true	# drop remote-tracking branches deleted on the remote
+
+[pull]
+	rebase = true	# replay local commits on top instead of a merge commit
+
+[rebase]
+	autoStash = true	# stash uncommitted changes around a pull/rebase
+
+[rerere]
+	enabled = true	# remember conflict resolutions and reapply them
+
+[diff]
+	algorithm = histogram
+
+[merge]
+	conflictStyle = zdiff3	# conflict markers also show the original version
+
 [alias]
         st = status
         b  = branch
