@@ -69,7 +69,7 @@ clear_path() {
     done
   else
     case "$(basename "$rel")" in
-      .gitignore | .DS_Store) return 0 ;; # not stowed
+      .gitignore | .DS_Store | README.* | LICENSE.*) return 0 ;; # not stowed
     esac
     backup "$rel"
   fi

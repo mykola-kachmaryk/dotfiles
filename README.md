@@ -281,13 +281,12 @@ exists on macOS; Linux falls back to another font.
 ##### zsh
 
 `~/.zshenv` (sets `ZDOTDIR`) and `~/.config/zsh`. Tools that aren't
-installed are skipped.
+installed are skipped. How it's organized and why it starts fast:
+[zsh/README.md](zsh/README.md).
 
 ```sh
 # install (macOS: Brewfile)
 sudo apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting
-# oh-my-zsh, without replacing .zshrc
-KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # link
 ./install.sh zsh

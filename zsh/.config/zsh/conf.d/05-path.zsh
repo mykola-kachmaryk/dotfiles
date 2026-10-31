@@ -42,8 +42,8 @@ if [[ -s $NVM_DIR/nvm.sh ]]; then
   unset _nvm_bin
 fi
 
-# Unchanged from the previous setup
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# nvm's completion: moved to 10-completion.zsh while testing without oh-my-zsh
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 if [[ $OSTYPE == darwin* ]]; then
   # Herd injected PHP binary.
