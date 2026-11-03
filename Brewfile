@@ -100,6 +100,7 @@ if OS.mac?
   cask "postman"
   cask "slack"
   cask "stats"
+  cask "tableplus"
   cask "transmission"
   cask "vscodium"
   cask "wezterm"
@@ -134,3 +135,5 @@ if OS.mac?
   vscode "vue.volar"
   vscode "xavier-castro.vague-windsurf"
 end
+# Native GUI tool for relational databases
+cask "tableplus"
