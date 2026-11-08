@@ -33,6 +33,8 @@ alias pnpt='pnpm truncate'
 
 # eza (better ls)
 (( $+commands[eza] )) && alias ls="eza --icons=always"
+(( $+commands[eza] )) && alias ll="ls -la"
+
 
 # zoxide (better cd)
 (( $+commands[zoxide] )) && alias cd="z"
