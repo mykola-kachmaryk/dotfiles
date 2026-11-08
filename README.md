@@ -117,7 +117,7 @@ the macOS-only block.
 - **starship:** non-Ghostty terminals need a Nerd Font
   (`brew install --cask font-jetbrains-mono-nerd-font`). Each
   `starship_<name>.toml` is a theme (plain `starship.toml` is `default`);
-  without a saved choice the prompt uses `minimal`.
+  without a saved choice the prompt uses `pure`.
 
   ```sh
   starship-theme          # list themes, * marks the active one

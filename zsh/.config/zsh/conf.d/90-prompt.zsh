@@ -11,6 +11,7 @@ unset plugin
 # remembered in $XDG_STATE_HOME so new shells pick it up.
 _starship_theme_dir="$HOME/.config/starship"
 _starship_theme_state="${XDG_STATE_HOME:-$HOME/.local/state}/starship-theme"
+_starship_theme_fallback=pure   # used when no theme has been chosen yet
 
 _starship_theme_file() {
   [[ $1 == default ]] && print -r -- "$_starship_theme_dir/starship.toml" \
@@ -29,7 +30,7 @@ _starship_theme_list() {
 # starship-theme <name>   switch this shell and remember it for new shells
 starship-theme() {
   local current=$([[ -r $_starship_theme_state ]] && <$_starship_theme_state) t
-  current=${current:-minimal}
+  current=${current:-$_starship_theme_fallback}
   if (( ! $# )); then
     for t in $(_starship_theme_list); do
       [[ $t == $current ]] && print "* $t" || print "  $t"
@@ -51,8 +52,8 @@ _starship_theme_complete() { compadd -- $(_starship_theme_list) }
 
 () {
   local t=$([[ -r $_starship_theme_state ]] && <$_starship_theme_state)
-  local file=$(_starship_theme_file ${t:-minimal})
-  [[ -r $file ]] || file=$(_starship_theme_file minimal)
+  local file=$(_starship_theme_file ${t:-$_starship_theme_fallback})
+  [[ -r $file ]] || file=$(_starship_theme_file $_starship_theme_fallback)
   export STARSHIP_CONFIG=$file
 }
 (( $+commands[starship] )) && eval "$(starship init zsh)"
