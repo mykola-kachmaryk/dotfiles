@@ -1,0 +1,89 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Lean: one line on the left (dir, git, prompt char); everything
+# else (languages, duration, exit code) pushed to the right prompt.
+
+add_newline = false
+format = "$directory$git_branch$git_status$character"
+right_format = "$conda$python$nodejs$rust$golang$java$kotlin$php$c$haskell$cmd_duration$status"
+
+palette = 'catppuccin_mocha'
+
+[directory]
+style = "bold fg:blue"
+format = "[$path]($style) "
+truncation_length = 2
+truncation_symbol = "…/"
+
+[git_branch]
+style = "fg:overlay1"
+format = "[$branch]($style)"
+
+[git_status]
+style = "fg:peach"
+format = "([ $all_status$ahead_behind]($style))"
+
+[character]
+format = " $symbol "
+success_symbol = '[›](bold fg:green)'
+error_symbol = '[›](bold fg:red)'
+vimcmd_symbol = '[‹](bold fg:green)'
+
+[cmd_duration]
+style = "fg:yellow"
+format = "[$duration]($style) "
+show_notifications = true
+min_time_to_notify = 45000
+
+[status]
+disabled = false
+style = "fg:red"
+format = "[✘ $status]($style) "
+
+[python]
+style = "fg:overlay1"
+format = "[py $version( \\($virtualenv\\))]($style) "
+
+[conda]
+style = "fg:overlay1"
+format = "[conda:$environment]($style) "
+
+[nodejs]
+style = "fg:overlay1"
+format = "[node $version]($style) "
+
+[rust]
+style = "fg:overlay1"
+format = "[rs $version]($style) "
+
+[golang]
+style = "fg:overlay1"
+format = "[go $version]($style) "
+
+[java]
+style = "fg:overlay1"
+format = "[java $version]($style) "
+
+[kotlin]
+style = "fg:overlay1"
+format = "[kt $version]($style) "
+
+[php]
+style = "fg:overlay1"
+format = "[php $version]($style) "
+
+[c]
+style = "fg:overlay1"
+format = "[c $version]($style) "
+
+[haskell]
+style = "fg:overlay1"
+format = "[hs $version]($style) "
+
+[palettes.catppuccin_mocha]
+blue = "#89b4fa"
+green = "#a6e3a1"
+red = "#f38ba8"
+peach = "#fab387"
+yellow = "#f9e2af"
+overlay1 = "#7f849c"
