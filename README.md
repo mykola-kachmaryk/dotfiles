@@ -95,7 +95,7 @@ the macOS-only block.
 | git | defaults, aliases, global ignore, commit template | `apt install git` |
 | karabiner | Caps Lock → Hyper/Escape, hjkl arrows (macOS, archived) | — |
 | nvim | LazyVim; plugins from `lazy-lock.json` | `apt install git ripgrep fd-find build-essential` + [Neovim release](https://github.com/neovim/neovim/releases) (apt's is too old) |
-| starship | prompt, via `STARSHIP_CONFIG` | `curl -sS https://starship.rs/install.sh \| sh` |
+| starship | prompt themes, switched with `starship-theme` | `curl -sS https://starship.rs/install.sh \| sh` |
 | tmux | prefix `C-a`; TPM plugins install on first start | `apt install tmux git python3 python3-venv` |
 | zed | editor; extensions auto-install | `curl -f https://zed.dev/install.sh \| sh` |
 | zsh | plain zsh, fnm, starts in ~0.08 s ([zsh/README.md](zsh/README.md)) | `apt install zsh zoxide eza zsh-autosuggestions zsh-syntax-highlighting` |
@@ -115,7 +115,19 @@ the macOS-only block.
   it overrides this config on macOS.
 - **nvim:** run `nvim`, then `:Lazy restore` for the exact plugin versions.
 - **starship:** non-Ghostty terminals need a Nerd Font
-  (`brew install --cask font-jetbrains-mono-nerd-font`).
+  (`brew install --cask font-jetbrains-mono-nerd-font`). Each
+  `starship_<name>.toml` is a theme (plain `starship.toml` is `default`);
+  without a saved choice the prompt uses `minimal`.
+
+  ```sh
+  starship-theme          # list themes, * marks the active one
+  starship-theme pure     # switch this shell; new shells use it too
+  ```
+
+  The choice is saved in `~/.local/state/starship-theme` (not in this repo,
+  so each machine keeps its own). Add a theme by dropping a
+  `starship_<name>.toml` here, e.g. from an official preset:
+  `starship preset gruvbox-rainbow -o ~/.config/starship/starship_gruvbox.toml`.
 - **tmux:** run `tmux`; the plugins install in the background. `prefix r`
   reloads, `prefix I` installs new plugins, `prefix Alt-u` removes unused.
 - **vscode, vscodium:** quit the editor before linking. Only `settings.json` is

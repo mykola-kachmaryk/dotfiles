@@ -21,7 +21,7 @@ starts in about 0.08 s.
 | `20-history.zsh` | history file and options, Up/Down prefix search |
 | `30-aliases.zsh` | your aliases (git, pnpm, eza, zoxide, nvim) |
 | `40-tools.zsh` | zoxide, zsh-autosuggestions |
-| `90-prompt.zsh` | zsh-syntax-highlighting, starship |
+| `90-prompt.zsh` | zsh-syntax-highlighting, starship, `starship-theme` (switch prompt themes) |
 
 `secrets.zsh` holds tokens. It is local only (ignored by git) and mode 600.
 
