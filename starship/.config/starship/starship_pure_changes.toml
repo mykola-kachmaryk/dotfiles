@@ -1,0 +1,74 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Pure, with the git changes spelled out instead of a bare "*".
+
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_state\
+$git_status\
+$cmd_duration\
+$line_break\
+$python\
+$character"""
+
+[directory]
+style = "blue"
+
+[character]
+success_symbol = "[❯](purple)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](green)"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "bright-black"
+
+[git_status]
+# Pure shows a bare "*"; this lists what changed: +staged !modified ?untracked
+format = "([$conflicted$staged$modified$renamed$deleted$untracked]($style))([$ahead_behind$stashed](cyan) )"
+style = "218"
+conflicted = "=${count} "
+staged = "+${count} "
+modified = "!${count} "
+renamed = "»${count} "
+deleted = "✘${count} "
+untracked = "?${count} "
+stashed = "≡"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bright-black"
+
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"
+
+[jj_bookmark]
+format = "[$bookmark(@$remote)$diverged( \\(+$overflow_count others\\))]($style)"
+style = "bright-black"
+
+[jj_status]
+format = "[[(*$all)](218)]($style)"
+style = "cyan"
+conflicted = "​"
+description_empty = ""
+description_present = ""
+hidden = "​"
+immutable = "​"
+added = "​"
+copied = ""
+deleted = "​"
+modified = "​"
+renamed = "​"
+
+[python]
+format = "[$virtualenv]($style) "
+style = "bright-black"
+detect_extensions = []
+detect_files = []
