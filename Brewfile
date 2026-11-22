@@ -113,7 +113,7 @@ if OS.mac?
   vscode "esbenp.prettier-vscode"
   vscode "laravel.vscode-laravel"
   vscode "mskelton.one-dark-theme"
-  vscode "nerosiar.just-black"
+  vscode "nur.just-black"
   vscode "nicholashsiang.vscode-vue2-snippets"
   vscode "nicholashsiang.vscode-vue3-snippets"
   vscode "orta.vscode-jest"
