@@ -44,14 +44,11 @@ brew "tree-sitter-cli"
 
 # Dev tools
 tap "jesseduffield/lazydocker", trusted: { formulae: ["lazydocker"] }
-brew "composer"
 brew "deno"
 brew "dos2unix"
 brew "fnm"
 brew "imagemagick"
 brew "lazydocker"
-brew "mysql"
-brew "python@3.11"
 brew "python@3.14"
 
 # Global npm packages. Need Node from fnm, so on a new machine these only
@@ -63,7 +60,6 @@ if OS.mac?
   tap "fif7y/tap", trusted: { casks: ["dimble"] }
   tap "minio/stable", trusted: { formulae: ["mc"] }
   tap "mutagen-io/mutagen", trusted: { formulae: ["mutagen", "mutagen-compose"] }
-  tap "shivammathur/php", trusted: { formulae: ["php@7.4"] }
   # QMK keyboard firmware and the toolchains it pulls in
   tap "qmk/qmk", trusted: { formulae: ["qmk", "hid_bootloader_cli", "mdloader"] }
   tap "osx-cross/arm", trusted: { formulae: ["arm-none-eabi-binutils", "arm-none-eabi-gcc@8"] }
@@ -73,17 +69,13 @@ if OS.mac?
   brew "mc"
   brew "mutagen"
   brew "mutagen-compose"
-  brew "php@7.4"
   brew "qmk"
   brew "avr-gcc@9"
 
   # Apps
-  cask "1password"
   cask "beekeeper-studio"
-  cask "betterdisplay"
   cask "bruno"
   cask "claude"
-  cask "claude-code"
   cask "dbeaver-community"
   cask "dimble" if MacOS.version >= :golden_gate # needs macOS 27
   cask "domzilla-caffeine"
@@ -91,15 +83,12 @@ if OS.mac?
   cask "fork"
   cask "gcc-arm-embedded"
   cask "ghostty"
-  cask "herd"
   cask "iina"
   cask "insomnia"
-  cask "iterm2"
   cask "kitty"
   cask "orbstack"
   cask "postman"
   cask "slack"
-  cask "stats"
   cask "tableplus"
   cask "transmission"
   cask "visual-studio-code"
@@ -136,5 +125,3 @@ if OS.mac?
   vscode "vue.volar"
   vscode "xavier-castro.vague-windsurf"
 end
-# Native GUI tool for relational databases
-cask "tableplus"
