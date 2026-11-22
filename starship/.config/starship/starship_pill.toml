@@ -218,7 +218,7 @@ format = "[ $symbol( $context) ]($style)"
 # --- background ---
 crust = "#11111b"
 mantle = "#181825"
-base = "#1e1e2e" # git branch bg
+base = "#1e1e2e"   # git branch bg
 
 overlay2 = "#9399b2"
 overlay1 = "#7f849c"
@@ -249,13 +249,13 @@ teal = "#94e2d5"
 sky = "#89dceb"
 sapphire = "#74c7ec"
 blue = "#89b4fa"
-lavender = "#b4befe" # git branch fg
+lavender = "#b4befe"  # git branch fg
 
 [palettes.gruvbox_dark]
 # --- background ---
 crust = "#1d2021"
 mantle = "#282828"
-base = "#fbf1c7" # git branch bg
+base = "#fbf1c7"   # git branch bg
 
 surface0 = "#3c3836"
 surface1 = "#504945"
@@ -284,13 +284,13 @@ teal = "#8ec07c"
 sky = "#8ec07c"
 sapphire = "#83a598"
 blue = "#458588"
-lavender = "#d3869b" # git branch fg
+lavender = "#d3869b"  # git branch fg
 
 [palettes.tokyonight_night]
 # --- background ---
 crust = "#16161e"
 mantle = "#16161e"
-base = "#1a1b26" # git branch bg
+base = "#1a1b26"   # git branch bg
 
 surface0 = "#292e42"
 surface1 = "#3b4261"
@@ -317,15 +317,15 @@ yellow = "#e0af68"
 green = "#9ece6a"
 teal = "#7dcfff"
 sky = "#7dcfff"
-sapphire = "#7aa2f7" # dir fg
+sapphire = "#7aa2f7"  # dir fg
 blue = "#7aa2f7"
-lavender = "#bb9af7" # git branch fg
+lavender = "#bb9af7"  # git branch fg
 
 [palettes.solarized_osaka]
 # --- background ---
 crust = "#00141a"
 mantle = "#002029"
-base = "#002b36" # git branch bg
+base = "#002b36"   # git branch bg
 
 surface0 = "#073642"
 surface1 = "#0f3b47"
@@ -362,7 +362,7 @@ lavender = "#f84668" # git branch fg
 # --- background ---
 crust = "#21252B"
 mantle = "#282C34"
-base = "#181825" # git branch bg
+base = "#181825"   # git branch bg
 
 surface0 = "#353B45"
 surface1 = "#3E4452"
@@ -388,6 +388,6 @@ yellow = "#E5C07B"
 green = "#98C379"
 teal = "#56B6C2"
 sky = "#56B6C2"
-sapphire = "#61AFEF" # dir fg
+sapphire = "#61AFEF"  # dir fg
 blue = "#61AFEF"
-lavender = "#61AFEF" # git branch fg
+lavender = "#61AFEF"  # git branch fg
